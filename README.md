@@ -10,6 +10,7 @@ Basic plotting scripts are located in the plotting directory. Scripts regarding 
 
 Additional information:
 - ROOT: https://root.cern.ch/documentation
+- Getting started with git: https://www.atlassian.com/git/tutorials
 - CERN summer student lecture programme: https://cds.cern.ch/search?ln=de&p=cern+summer+student+lecture+programme&action_search=Suchen&op1=a&m1=a&p1=&f1=&c=CERN+Document+Server&sf=&so=d&rm=wrd&rg=10&sc=1&of=hb#3
 - Deep Learning (by Ian Goodfellow, Yoshua Bengio and Aaron Courvielle): http://www.deeplearningbook.org/
 - A crash course in Python for scientists: http://nbviewer.jupyter.org/gist/rpmuller/5920182

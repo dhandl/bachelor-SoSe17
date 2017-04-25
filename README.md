@@ -1,7 +1,9 @@
 This repository has been set up for the bachelor students of the summer term 2017 and is meant to collect basic information (directly or pointing to) on all aspects relevant for their projects.
 
-To clone this repository locally you have to type
+To clone this repository locally you have to type:
+
     git clone git@gitlab.physik.uni-muenchen.de:David.Handl/bachelor-SoSe17.git
+
     cd bachelor-SoSe17
 
 Basic plotting scripts are located in the plotting directory. Scripts regarding to multivariate analysis techniques are located in the ML directory.

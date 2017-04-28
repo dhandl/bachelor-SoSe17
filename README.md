@@ -6,6 +6,8 @@ To clone this repository locally you have to type:
 
     cd bachelor-SoSe17
 
+    source setup.sh
+    
 Basic plotting scripts are located in the plotting directory. Scripts regarding to multivariate analysis techniques are located in the ML directory.
 
 Additional information:

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<MethodSetup Method="Fisher::Fisher">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.2.1 [262657]"/>
+    <Info name="ROOT Release" value="6.08/00 [395264]"/>
+    <Info name="Creator" value="dhandl"/>
+    <Info name="Date" value="Tue Apr 25 16:37:21 2017"/>
+    <Info name="Host" value="Linux lcgapp-slc6-physical1.cern.ch 2.6.32-642.4.2.el6.x86_64 #1 SMP Wed Aug 24 09:19:54 CEST 2016 x86_64 x86_64 x86_64 GNU/Linux"/>
+    <Info name="Dir" value="/afs/cern.ch/user/d/dhandl/testareas/MyAnaTools/StatisticsSchool2017/tutorials/examples/2_higgs_tmva_adaboost"/>
+    <Info name="Training events" value="5000"/>
+    <Info name="TrainingTime" value="1.39403343e-03"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="Yes">None</Option>
+    <Option name="H" modified="Yes">False</Option>
+    <Option name="CreateMVAPdfs" modified="No">False</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="No">False</Option>
+    <Option name="Method" modified="No">Fisher</Option>
+  </Options>
+  <Variables NVar="2">
+    <Variable VarIndex="0" Expression="Z1mass" Label="Z1mass" Title="Z1mass" Unit="" Internal="Z1mass" Type="D" Min="4.03139725e+01" Max="1.17127800e+02"/>
+    <Variable VarIndex="1" Expression="Z2mass" Label="Z2mass" Title="Z2mass" Unit="" Internal="Z2mass" Type="D" Min="1.21137800e+01" Max="1.19685158e+02"/>
+  </Variables>
+  <Spectators NSpec="0"/>
+  <Classes NClass="2">
+    <Class Name="Signal" Index="0"/>
+    <Class Name="Background" Index="1"/>
+  </Classes>
+  <Transformations NTransformations="0"/>
+  <MVAPdfs/>
+  <Weights NCoeff="3">
+    <Coefficient Index="0" Value="7.0516215884615256e+00"/>
+    <Coefficient Index="1" Value="-4.7703061623469434e-02"/>
+    <Coefficient Index="2" Value="-5.1570808837276647e-02"/>
+  </Weights>
+</MethodSetup>

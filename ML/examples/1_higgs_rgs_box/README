@@ -1,0 +1,15 @@
+Description
+-----------
+Discriminate between non-VBF pp -> H --> 4l events and pp -> ZZ -> 4l events
+using box cuts.
+    
+(A) Run RGS
+    python train.py
+
+output:
+    example1.root
+    example1.txt
+
+(B) Analyze results of RGS to find best cuts
+    python analysis.py
+

@@ -1,0 +1,25 @@
+1. Prepare training data
+
+   mixsigbkg.py -s goodwine.dat -b badwine.dat -v vars.txt wino
+
+2. Prepare training script
+
+   mktrain.py -H 5 -N 1000 wino
+
+3. Run MCMC sampling
+
+   source wino.sh&
+
+4. Periodically check training using
+
+   net-disaplay -h wino.bin
+
+
+5. Create self-contained C++ program of BNN
+
+   netwrite.py -100 wino.bin
+
+6. Make some plots
+
+   ./analysis.py
+

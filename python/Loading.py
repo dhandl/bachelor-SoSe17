@@ -4,17 +4,16 @@ import re
 from array import array
 from collections import namedtuple
 import math
+import os
 
 #############################
 
-def load_input(input_name, directory=None):
-	fileName = "output/" + input_name + ".root"
-	if directory:
-		fileName = directory + "/" + input_name + ".root"
+def load_input(input_name, directory="output"):
+	fileName = directory + "/" + input_name + ".root"
 	f = TFile.Open(fileName)
 
-	train_tree = f.Get("TrainTree")
-	test_tree = f.Get("TestTree")
+	train_tree = f.Get("output/TrainTree")
+	test_tree = f.Get("output/TestTree")
 
 	return train_tree, test_tree, f
 
@@ -117,12 +116,12 @@ def set_variables_reader(variables, reader):
 
 	return var_store
 
-def create_reader(variables, name):
+def create_reader(variables, directory, name):
 	reader = TMVA.Reader()
 
 	var_store = set_variables_reader(variables, reader)
 
-	file_name = "weights/" + name + ".weights.xml"
+	file_name = os.path.join(directory, "weights", name + ".weights.xml")
 	print "load weights from ", file_name
 	reader.BookMVA(name.split("_")[-1], file_name)
 

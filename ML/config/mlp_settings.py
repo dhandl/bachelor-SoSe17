@@ -1,9 +1,0 @@
-TYPE:kMLP
-NAME:MLP
-!V
-NeuronType=tanh
-!UseRegulator
-VarTransform=N
-NCycles=600
-HiddenLayers=N+5
-TestRate=5

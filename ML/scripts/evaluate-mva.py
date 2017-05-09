@@ -10,9 +10,14 @@ from Loading import *
 from EvaluateReader import *
 from Style import *
 
-###############################
+import config
 
+from operator import itemgetter
+
+###############################
+"""
 DIRECTORY = "/lustre/boerner/swup/stop1l-xaod/export/default_moriond17/"
+
 BACKGROUNDS = {
 	"ttbar": DIRECTORY + "/powheg_ttbar/*.root/powheg_ttbar_Nom",
 	"Wjets": DIRECTORY +"/sherpa22_Wjets/*.root/sherpa22_Wjets_Nom",
@@ -20,6 +25,7 @@ BACKGROUNDS = {
 #	"singletop": DIRECTORY +"/powheg_singletop/*.root/powheg_singletop_Nom",
 #	"diboson": DIRECTORY +"/sherpa_diboson/*.root/sherpa_diboson_Nom",
 }
+
 SIGNALS = {
 	"stop_tN_250_62": DIRECTORY + "/stop_tN_250_62/*.root/stop_tN_250_62_Nom",
 	#"stop_tN_300_112_MET100": DIRECTORY +"/stop_tN_300_112_MET100/*.root/stop_tN_300_112_MET100_Nom",
@@ -29,9 +35,11 @@ SIGNALS = {
 PRESELECTION = "(dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && (n_jet>=4) && (n_bjet>0) && (jet_pt[0]>50e3) && (jet_pt[1]>25e3) && (jet_pt[2]>25e3) && (jet_pt[3]>25e3) && (mt>120e3) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (met>120e3)"
 
 WEIGHT = "xs_weight * weight * sf_total"
-
+"""
 
 ###############################
+
+OUT_DIRECTORY = None
 
 def plot_mva_distribution(sig_hist, bkg_hist, input_name, mva_name, prefix, out_name, lumi):
 	out_dir = input_name
@@ -142,10 +150,10 @@ def plot_and_get_sig(sig_hist, bkg_hist, input_name, total_sig, total_bkg, mva_n
 
 ###############################
 
-def get_out_name(SIGNALS):
+def get_out_name(signals):
 	name = ""
-	for n, _smp in SIGNALS.iteritems():
-		name +=  "_" + n 
+	for sig in signals:
+		name +=  "_" + sig.name
 	return name
 
 def save_mva_hist(sig_mva, bkg_mva, name, mva_name, prefix, out_name):
@@ -164,7 +172,8 @@ def parse_options():
 	import argparse
 	parser = argparse.ArgumentParser()
 
-	parser.add_argument("name", help="the name of the input xml file")
+	parser.add_argument("name", help="the name of the input xml file", default=None, nargs="?")
+	parser.add_argument("-s", "--samples", help="configuration file for the input samples", default="samples")
 	parser.add_argument("-v", "--variables", help="configuration file for the used variables", default="variables")
 
 	parser.add_argument("-r", "--random-variable", help="a variable which should be replaced by some random distribution for the evaluation", dest="random_var")
@@ -175,24 +184,22 @@ def parse_options():
 
 	parser.add_argument("-l", "--lumi", help="the luminostity in fb^-1 used to calculate the expected significance", type=float, default=30.)
 
-	parser.add_argument("--sig", help="specify specific signal samples", action="append")
+	parser.add_argument("--sig", help="specify specific signal samples", action="append", default=[])
 
-	parser.add_argument("--add-var", help="add an additional variable", action="append")
-	parser.add_argument("--rm-var", help="remove a variable", action="append")
-	parser.add_argument("--directory", help="specify a directory, if you prefer some special naming scheme")
+	parser.add_argument("--add-var", help="add an additional variable", action="append", default=[])
+	parser.add_argument("--rm-var", help="remove a variable", action="append", default=[])
+
+	parser.add_argument("--directory", help="specify a directory, if you prefer some special naming scheme", default="output")
 
 	opts = parser.parse_args()
 
-	if opts.directory:
-		global OUT_DIRECTORY
-		OUT_DIRECTORY = opts.directory
-
+	"""
 	if opts.sig:
 		global SIGNALS
 		SIGNALS = {}
 		for s in opts.sig:
 			SIGNALS[s] = DIRECTORY + "/" + s + "/*.root/" + s + "_Nom"
-
+	"""		
 
 	opts.prefix = ""
 	if opts.random_var:
@@ -200,18 +207,31 @@ def parse_options():
 
 	return opts
 
-OUT_DIRECTORY = None
-
 def main():
 	opts = parse_options()
-	print SIGNALS
-	out_name = get_out_name(SIGNALS)
 
-	bkg_tree = load_tree(BACKGROUNDS, PRESELECTION)
-	sig_tree = load_tree(SIGNALS, PRESELECTION)
+	if not opts.name:
+		files = [f for f in os.listdir(os.path.join(opts.directory, "weights")) if f.endswith(".weights.xml")]
+		files = [(f, os.path.getmtime(os.path.join(opts.directory, "weights", f))) for f in files]
+		files.sort(reverse=True, key=itemgetter(1))
+		opts.name = files[0][0].replace(".weights.xml", "")
+		print "No file specified. Using the newest file '{}' instead".format(opts.name)
 
-	variables = load_var_list("config/{cfg}.py".format(cfg=opts.variables), opts.add_var, opts.rm_var)
-	reader, var_store = create_reader(variables, opts.name)
+	sample_info = getattr(__import__("config." + opts.samples), opts.samples)
+	out_name = get_out_name(sample_info.Signal)
+
+	_t = TChain()
+	for add_bkg in sample_info.Background:
+		_t.Add(add_bkg.tree)
+	bkg_tree = _t.CopyTree(sample_info.Preselection)
+
+	_t = TChain()
+	for add_sig in sample_info.Signal:
+		_t.Add(add_sig.tree)
+	sig_tree = _t.CopyTree(sample_info.Preselection)
+
+	variables = config.load_var_list(opts.variables, opts.add_var, opts.rm_var)
+	reader, var_store = create_reader(variables, opts.directory, opts.name)
 
 	random_var_hist = None
 	rnd_var_index = None

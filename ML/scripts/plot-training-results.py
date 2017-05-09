@@ -10,6 +10,8 @@ from Style import *
 from Loading import *
 import Variables
 
+from operator import itemgetter
+
 ###############################
 
 def plot_mlp_distribution(train_tree, test_tree, input_name, nbins, min, max, mva_name, output):
@@ -244,8 +246,8 @@ def parse_options():
 	import argparse
 	parser = argparse.ArgumentParser()
 
-	parser.add_argument("name", help="the name of the input file")
-	parser.add_argument("--directory", help="directory where the input file is stored")
+	parser.add_argument("name", help="the name of the input file", default=None, nargs="?")
+	parser.add_argument("--directory", help="directory where the input file is stored", default="output")
 	parser.add_argument("--output", help="give a directory where the output will be stored")
 
 	parser.add_argument("-b", "--nbins", help="binning for mlp distribution", type=int, default=50)
@@ -264,6 +266,13 @@ def parse_options():
 
 def main():
 	opts = parse_options()
+
+	if not opts.name:
+		files = [f for f in os.listdir(opts.directory) if f.endswith(".root")]
+		files = [(f, os.path.getmtime(os.path.join(opts.directory, f))) for f in files]
+		files.sort(reverse=True, key=itemgetter(1))
+		opts.name = files[0][0].replace(".root", "")
+		print "No file specified. Using the newest file '{}' instead".format(opts.name)
 
 	train_tree, test_tree, input_file = load_input(opts.name, opts.directory)
 

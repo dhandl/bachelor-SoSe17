@@ -1,6 +1,17 @@
 import ROOT
 from math import *
 
+def getYieldFromChain(c, cutString = "(1)", lumi = "10000.", weight = "weight * xs_weight * sf_total * weight_sherpa22_njets", returnError=True):
+  h = ROOT.TH1D('h_tmp', 'h_tmp', 1,0,2)
+  h.Sumw2()
+  c.Draw("1>>h_tmp", "("+lumi+"*"+weight+")*("+cutString+")", 'goff')
+  res = h.GetBinContent(1)
+  resErr = h.GetBinError(1)
+  del h
+  if returnError:
+    return res, resErr
+  return res
+
 def getVarValue(c, var, n=0):
   varNameHisto = var
   leaf = c.GetAlias(varNameHisto)

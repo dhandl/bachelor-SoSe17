@@ -14,6 +14,31 @@ import config
 
 from operator import itemgetter
 
+###############################
+"""
+DIRECTORY = "/lustre/boerner/swup/stop1l-xaod/export/default_moriond17/"
+
+BACKGROUNDS = {
+	"ttbar": DIRECTORY + "/powheg_ttbar/*.root/powheg_ttbar_Nom",
+	"Wjets": DIRECTORY +"/sherpa22_Wjets/*.root/sherpa22_Wjets_Nom",
+#	"ttV": DIRECTORY +"/madgraph_ttV/*.root/madgraph_ttV_Nom",
+#	"singletop": DIRECTORY +"/powheg_singletop/*.root/powheg_singletop_Nom",
+#	"diboson": DIRECTORY +"/sherpa_diboson/*.root/sherpa_diboson_Nom",
+}
+
+SIGNALS = {
+	"stop_tN_250_62": DIRECTORY + "/stop_tN_250_62/*.root/stop_tN_250_62_Nom",
+	#"stop_tN_300_112_MET100": DIRECTORY +"/stop_tN_300_112_MET100/*.root/stop_tN_300_112_MET100_Nom",
+	#"stop_tN_350_162_MET100": DIRECTORY +"/stop_tN_350_162_MET100/*.root/stop_tN_350_162_MET100_Nom",	
+}
+
+PRESELECTION = "(dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && (n_jet>=4) && (n_bjet>0) && (jet_pt[0]>50e3) && (jet_pt[1]>25e3) && (jet_pt[2]>25e3) && (jet_pt[3]>25e3) && (mt>120e3) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (met>120e3)"
+
+WEIGHT = "xs_weight * weight * sf_total"
+"""
+
+###############################
+
 OUT_DIRECTORY = None
 
 def plot_mva_distribution(sig_hist, bkg_hist, input_name, mva_name, prefix, out_name, lumi):

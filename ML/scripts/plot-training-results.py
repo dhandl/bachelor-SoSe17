@@ -14,8 +14,6 @@ from operator import itemgetter
 
 ###############################
 
-# _train_test
-# mlp_dist/
 def plot_mlp_distribution(train_tree, test_tree, input_name, nbins, min, max, mva_name, output):
 	mlp_train_sig, mlp_train_bkg = load_mlp(train_tree, "train", mva_name, nbins, min, max, norm=True)
 	mlp_test_sig, mlp_test_bkg = load_mlp(test_tree, "test", mva_name, nbins, min, max, norm=True)
@@ -23,10 +21,10 @@ def plot_mlp_distribution(train_tree, test_tree, input_name, nbins, min, max, mv
 	# save all bdt distributions
 	if output:
 		try:
-			os.makedirs(os.path.join("plots", output, "mlp_dist"))
+			os.makedirs(os.path.join(output, "bdt_dist"))
 		except:
 			pass
-		outfile = TFile(os.path.join("plots", output, "mlp_dist", input_name + ".root"), "recreate")
+		outfile = TFile(os.path.join(output, "bdt_dist", input_name + ".root"), "recreate")
 		outfile.WriteTObject(mlp_test_sig, "mlp_test_sig")
 		outfile.WriteTObject(mlp_train_sig, "mlp_train_sig")
 		outfile.WriteTObject(mlp_test_bkg, "mlp_test_bkg")
@@ -67,8 +65,8 @@ def plot_mlp_distribution(train_tree, test_tree, input_name, nbins, min, max, mv
 
 
 	save_canv(canv, input_name, output)
-"""
-def plot_eff(train_tree, test_tree, class_name, input_name, nbins, min, max, mva_name, output):
+
+def plot_eff(train_tree, test_tree, class_name, input_name, nbins, min, max, mva_name):
 	if class_name == "sig":
 		classID = "classID == 0"
 	else:
@@ -92,12 +90,8 @@ def plot_eff(train_tree, test_tree, class_name, input_name, nbins, min, max, mva
 	leg.AddEntry(eff_val, "Test", "l")
 	leg.Draw("same")
 
-	save_canv(canv, input_name, output)
-"""
+	save_canv(canv, input_name)
 
-############################################################################
-
-# _roc
 def plot_roc_curve(train_tree, test_tree, input_name, sig_train, sig_test, mva_name, lumi, output):
 	roc_train = get_roc_curve(train_tree, "train", mva_name)
 	roc_test = get_roc_curve(test_tree, "test", mva_name)
@@ -120,7 +114,6 @@ def plot_roc_curve(train_tree, test_tree, input_name, sig_train, sig_test, mva_n
 	save_canv(canv, input_name, output)
 
 
-# _sig
 def plot_and_get_sig(train_tree, test_tree, input_name, total_sig, total_bkg, nbins, min, max, mva_name, lumi, output):
 	sig_train = get_sig(train_tree, "train", mva_name, total_sig, total_bkg, lumi, nbins, min, max)
 	sig_test = get_sig(test_tree, "test", mva_name, total_sig, total_bkg, lumi, nbins, min, max)
@@ -142,7 +135,7 @@ def plot_and_get_sig(train_tree, test_tree, input_name, total_sig, total_bkg, nb
 	index_max_test = TMath.LocMax(sig_test.GetN(), sig_test.GetY())
 	sig_test_max = (sig_test.GetY()[index_max_test], sig_test.GetEY()[index_max_test])
 
-	leg = TLegend(0.2, 0.75, 0.5, 0.9)
+	leg = TLegend(0.2, 0.75, 0.6, 0.9)
 	PlotStyle.legend(leg)
 	leg.AddEntry(sig_train, "Train: %.1f #pm %.1f @%s/fb" % (sig_train_max[0], sig_train_max[1], lumi) ,"l")
 	leg.AddEntry(sig_test, "Test: %.1f #pm %.1f @%s/fb" % (sig_test_max[0], sig_test_max[1], lumi) ,"l")
@@ -152,7 +145,6 @@ def plot_and_get_sig(train_tree, test_tree, input_name, total_sig, total_bkg, nb
 
 	return sig_train_max, sig_test_max
 
-#data/
 def evaluate_mlp(train_tree, test_tree, total_sig, total_bkg, input_name, nbins, min, max, mva_name, lumi, output):
 	#plot_eff(train_tree, test_tree, "sig", input_name, nbins, min, max, mva_name)
 	#plot_eff(train_tree, test_tree, "bkg", input_name, nbins, min, max, mva_name)
@@ -162,7 +154,7 @@ def evaluate_mlp(train_tree, test_tree, total_sig, total_bkg, input_name, nbins,
 	plot_roc_curve(train_tree, test_tree, input_name, "%.1f #pm %.1f" % sig_train, "%.1f #pm %.1f" % sig_test, mva_name, lumi, output)
 
 	if output:
-		data_out = os.path.join("plots", output, "data")
+		data_out = os.path.join(output, "data")
 		try:
 			os.makedirs(data_out)
 		except:
@@ -175,9 +167,8 @@ def evaluate_mlp(train_tree, test_tree, total_sig, total_bkg, input_name, nbins,
 		outfile.close()
 
 ###############################
-# corr/
-##############################
-def plot_and_save(hist, input_name, mva_name, output):
+
+def plot_and_save(hist, input_name, mva_name):
 	rho = hist.GetCorrelationFactor()
 	canv = TCanvas("corr_" + hist.GetName(), "", 800, 600)
 	PlotStyle.canv_2d(canv, hist)
@@ -185,11 +176,11 @@ def plot_and_save(hist, input_name, mva_name, output):
 	hist.Draw("colz")
 	PlotStyle.string(.03, .03, "#rho = %.2f" % rho)
 
-	save_canv(canv, input_name, output + "/corr")
+	save_canv(canv, input_name, "corr_" + input_name + "_" + mva_name)
 
 	canv.SetLogz()
 	canv.Update()
-	save_canv(canv, input_name + "_log", output + "/corr")
+	save_canv(canv, input_name + "_log", "corr_" + input_name + "_" + mva_name)
 
 import re
 IndexMatch = re.compile("_(\\d)_$") # '_' + digit + '_' + end-of-string
@@ -237,7 +228,7 @@ def get_corr_hist(tree, mva_name, variable, cut, type, mva_binning):
 
 	return hist
 
-def plot_corr(train_tree, test_tree, input_name, mva_name, mva_binning, output):
+def plot_corr(train_tree, test_tree, input_name, mva_name, mva_binning):
 	for b in test_tree.GetListOfBranches():
 		if b.GetName() == mva_name:
 			continue
@@ -245,8 +236,8 @@ def plot_corr(train_tree, test_tree, input_name, mva_name, mva_binning, output):
 		hist_sig = get_corr_hist(test_tree, mva_name, b.GetName(), "(classID == 0)", "sig", mva_binning)
 		hist_bkg = get_corr_hist(test_tree, mva_name, b.GetName(), "(classID == 1)", "bkg", mva_binning)
 		
-		plot_and_save(hist_sig, input_name, mva_name, output)
-		plot_and_save(hist_bkg, input_name, mva_name, output)
+		plot_and_save(hist_sig, input_name, mva_name)
+		plot_and_save(hist_bkg, input_name, mva_name)
 
 
 ###############################
@@ -285,15 +276,15 @@ def main():
 
 	train_tree, test_tree, input_file = load_input(opts.name, opts.directory)
 
-	plot_mlp_distribution(train_tree, test_tree, opts.name, opts.nbins, opts.min, opts.max, opts.mva_name, opts.name)
+	plot_mlp_distribution(train_tree, test_tree, opts.name, opts.nbins, opts.min, opts.max, opts.mva_name, opts.output)
 
 	total_sig = get_total_events([train_tree, test_tree], "classID == 0")
 	total_bkg = get_total_events([train_tree, test_tree], "classID == 1")
 
-	evaluate_mlp(train_tree, test_tree, total_sig, total_bkg, opts.name, opts.nbins, opts.min, opts.max, opts.mva_name, opts.lumi, opts.name)
+	evaluate_mlp(train_tree, test_tree, total_sig, total_bkg, opts.name, opts.nbins, opts.min, opts.max, opts.mva_name, opts.lumi, opts.output)
 
 	if opts.corr:
-		plot_corr(train_tree, test_tree, opts.name, opts.mva_name, opts.mva_binning, opts.name)
+		plot_corr(train_tree, test_tree, opts.name, opts.mva_name, opts.mva_binning)
 
 ###############################
 

@@ -37,9 +37,6 @@ def get_mva(name, extra_opts=[], rm_opts=[]):
 
   raise Exception("No such analysis '{}'".format(mva_name))
 
-def get_all_mvas():
-  return [Analysis(mva_type, mva_name, ":".join(opts)) for (mva_type, mva_name, opts) in analyses]
-
 #####################
 # VARIABLES
 #####################
@@ -57,7 +54,7 @@ def parse_var(var):
 
   return Var(name, vtype)
 
-def load_var_list(file_name, add_vars=[], rm_vars=[], include_spectators=True):
+def load_var_list(file_name, add_vars=[], rm_vars=[]):
   with open("config/{}.txt".format(file_name)) as f:
     all_variables = [parse_var(l.strip()) for l in f.read().split("\n") if l.strip() != "" and not l.strip().startswith("#")]
 
@@ -70,11 +67,5 @@ def load_var_list(file_name, add_vars=[], rm_vars=[], include_spectators=True):
 
   rm_vars = [parse_var(var).name for var in rm_vars]
 
-  return [var for var in all_variables if not var.name in rm_vars and not (var.name.startswith("?") and not include_spectators)]
+  return [var for var in all_variables if not var.name in rm_vars]
 
-#######################
-# SAMPLES
-#######################
-
-def get_sample_info(sample):
-  return getattr(__import__("config." + sample), sample)

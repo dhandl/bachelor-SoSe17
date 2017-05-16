@@ -6,7 +6,7 @@ import sys
 """CUT = "(stxe_trigger) &&  \
 (n_jet>=4) &&  \
 (jet_pt[0]>50000) && (jet_pt[1]>25000) && (jet_pt[2]>25000) && (jet_pt[3]>25000) && \
-(mt>130e3) &&  \
+(mt>30000) &&  \
 (met>300e3) &&  \
 (n_bjet>0) && \
 (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) &&  \

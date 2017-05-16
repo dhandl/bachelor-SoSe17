@@ -25,5 +25,71 @@ analyses = [
 			"TestRate=5",
 			"ConvergenceTests=5"
 		]
+	),
+
+	Analysis(TMVA.Types.kMLP, "MLP two layers", 
+		[
+			"V",
+			"!UseRegulator",
+			"NeuronType=tanh",
+			"VarTransform=N",
+			"NCycles=600",
+			"HiddenLayers=N+5,N+5",
+			"TestRate=5",
+			"ConvergenceTests=5"
+		]
+	),
+
+	Analysis(TMVA.Types.kMLP, "MLP two layers more neurons", 
+		[
+			"V",
+			"!UseRegulator",
+			"NeuronType=tanh",
+			"VarTransform=N",
+			"NCycles=600",
+			"HiddenLayers=N+15,N+15",
+			"TestRate=5",
+			"ConvergenceTests=5"
+		]
+	),
+
+	Analysis(TMVA.Types.kMLP, "MLP two layers more neurons sigmoid ", 
+		[
+			"V",
+			"!UseRegulator",
+			"NeuronType=sigmoid",
+			"VarTransform=N",
+			"NCycles=600",
+			"HiddenLayers=N+15,N+15",
+			"TestRate=5",
+			"ConvergenceTests=5"
+		]
+	),
+
+	Analysis(TMVA.Types.kMLP, "MLP less training cycles, higher test rate ", 
+		[
+			"V",
+			"!UseRegulator",
+			"NeuronType=tanh",
+			"VarTransform=N",
+			"NCycles=200",
+			"HiddenLayers=N+5",
+			"TestRate=20",
+			"ConvergenceTests=40"
+		]
+	),
+
+	Analysis(TMVA.Types.kMLP, "MLP sqsum", 
+		[
+			"V",
+			"!UseRegulator",
+			"NeuronType=tanh",
+			"NeuronInputType=sqsum",
+			"VarTransform=N",
+			"NCycles=600",
+			"HiddenLayers=N+5",
+			"TestRate=5",
+			"ConvergenceTests=5"
+		]
 	)
 ]

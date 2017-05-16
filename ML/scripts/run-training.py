@@ -37,7 +37,7 @@ def set_variables(variables, loader):
       loader.AddVariable(name, vtype)
 
 
-def setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loader, k, i):
+def setup_data(sample_info, factory, loader, k, i):
   sigCut = getattr(sample_info, "SignalCut", "1.0")
   bkgCut = getattr(sample_info, "BkgCut", "1.0")
   sigCut = TCut(sigCut + " * (" + sample_info.Preselection + ")")
@@ -61,8 +61,8 @@ def setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loade
   loader.SetWeightExpression(sample_info.Weight)
   loader.PrepareTrainingAndTestTree(sigCut, bkgCut, "NormMode=NumEvents:!V")
 
+def setup_mva(mva_type, mva_name, mva_settings, factory, loader):
   factory.BookMethod(loader, mva_type, mva_name, mva_settings)
-
 
 def train(factory):
   factory.TrainAllMethods()
@@ -93,6 +93,8 @@ def parse_options():
   parser.add_argument("--add-var", help="add an additional variable", action="append", default=[])
   parser.add_argument("--rm-var", help="remove a variable", action="append", default=[])
 
+  parser.add_argument("--all-mva", help="run all mva's in analyses.py", action="store_true", default=False)
+
   opts = parser.parse_args()
 
   if not os.path.exists(opts.directory):
@@ -107,26 +109,33 @@ def parse_options():
     
   return opts
 
+  
 def main():
   opts = parse_options()
 
   # load the different configuration files
   variables = config.load_var_list(opts.variables, opts.add_var, opts.rm_var)
 
-  mva_type, mva_name, mva_settings = config.get_mva(opts.analysis, opts.mva_opts, opts.rm_mva_opts)
+  #prepare TMVA and run training
+  factory, outfile, loader = create_factory(opts.output, opts.name, opts.directory, opts.batch)
+  set_variables(variables, loader)
 
-  sample_info = getattr(__import__("config." + opts.samples), opts.samples)
+  sample_info = config.get_sample_info(opts.samples)
   if opts.presel:
     sample_info.Preselection = opts.presel
   print sample_info.Preselection + "\n"
 
-  # prepare TMVA and run training
-  factory, outfile, loader = create_factory(opts.output, opts.name, opts.directory, opts.batch)
-  set_variables(variables, loader)
+  setup_data(sample_info, factory, loader, opts.k, opts.i)
 
-  setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loader, opts.k, opts.i)
+  if opts.all_mva:
+    for (mva_type, mva_name, mva_settings) in config.get_all_mvas():
+      setup_mva(mva_type, mva_name, mva_settings, factory, loader)
+
+  else:
+    mva_type, mva_name, mva_settings = config.get_mva(opts.analysis, opts.mva_opts, opts.rm_mva_opts)
+    setup_mva(mva_type, mva_name, mva_settings, factory, loader)
+
   train(factory)
-
   outfile.Close()
 
 ###############################

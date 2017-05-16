@@ -3,6 +3,16 @@ mt
 n_bjet
 dphi_met_lep
 amt2
+RJC_nJets30
+RJR_nBJets 
+RJR_PTISR 
+RJR_RISR 
+RJR_MS  
+RJR_dphiISRI
+RJR_NbV 
+RJR_NjV 
+RJR_NlV 
+RJR_pTbV1
 
 ?sf_total
 ?xs_weight

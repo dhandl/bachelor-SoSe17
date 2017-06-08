@@ -13,7 +13,7 @@ def getThrust(c):
     px = funcs.px(j)
     py = funcs.py(j)
     j.update({"px":px, "py":py})
-  t = ROOT.Thrust(len(jets), np.array([i["px"] for i in jets]), np.array([k["pt"] for k in jets]))
+  t = ROOT.Thrust(len(jets), np.array([i["px"] for i in jets]), np.array([k["py"] for k in jets]))
   return t.thrust(), t.thrustPhi() 
 
 def getThrustLepHemi(c):
@@ -22,6 +22,6 @@ def getThrustLepHemi(c):
     px = funcs.px(j)
     py = funcs.py(j)
     j.update({"px":px, "py":py})  
-  t = ROOT.Thrust(len(jets), np.array([i["px"] for i in jets]), np.array([k["pt"] for k in jets]))
+  t = ROOT.Thrust(len(jets), np.array([i["px"] for i in jets]), np.array([k["py"] for k in jets]))
   return t.thrust(), t.thrustPhi()
 

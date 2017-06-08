@@ -1,6 +1,18 @@
 import ROOT
 from math import *
 
+def px(obj):
+  return obj['pt'] * cos(obj['phi'])
+
+def py(obj):
+  return obj['pt'] * sin(obj['phi'])
+
+def pz(obj):
+  return obj['pt'] * sinh(obj['eta'])
+
+def psquare(x, y, z):
+  return (x * x) + (y * y) + (z * z)
+
 def getYieldFromChain(c, cutString = "(1)", lumi = "10000.", weight = "weight * xs_weight * sf_total * weight_sherpa22_njets", returnError=True):
   h = ROOT.TH1D('h_tmp', 'h_tmp', 1,0,2)
   h.Sumw2()
@@ -40,6 +52,21 @@ def getJets(c):
   for i in range(nJet):
     jet = getObjDict(c, 'jet_', ['pt','eta', 'phi'], i)
     jet.update(getObjDict(c, 'jet_', addJetVars, i))
+    jets.append(jet)
+  return jets
+
+def getJetsLepMet(c):
+  if c=="branches":return ['n_jet','jet_pt','jet_eta', 'jet_phi']
+  nJet = int(getVarValue(c, 'n_jet'))
+  jets=[]
+  lep = getObjDict(c, 'lep_', ['pt','eta','phi'], 0)
+  met = c.GetLeaf('met').GetValue()
+  met_phi = c.GetLeaf('met_phi').GetValue()
+  etmiss = {'pt':met, 'phi':met_phi}
+  jets.append(etmiss)
+  jets.append(lep)
+  for i in range(nJet):
+    jet = getObjDict(c, 'jet_', ['pt','eta', 'phi'], i)
     jets.append(jet)
   return jets
 

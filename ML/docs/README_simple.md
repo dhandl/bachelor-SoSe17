@@ -1,5 +1,4 @@
 how to use this TMVA optimisation code:
-- setup ROOT (the setup.sh scrip may only work in Wuppertal)
 - specify the input samples in "config/samples.py" (the exported samples from the SWup code can be used without problems, other ntuples may need some changes in the code)
 - in "config/variables.py" all interesting variables can be definied which will then be used in the training
 --> it's also possible to add here spectators

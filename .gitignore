@@ -1,6 +1,17 @@
 
 # Created by https://www.gitignore.io/api/root,python
 
+*.pyc
+*~
+.*
+*.pdf
+*.eps
+*.root
+*.sh.*
+ML/config/
+ML/examples/
+ML/fbm.2004-11-10/
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/

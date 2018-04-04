@@ -59,6 +59,7 @@ def setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loade
     loader.AddTree(entry.tree, "Background", weight, test_cut, TMVA.Types.kTesting)
 
   loader.SetWeightExpression(sample_info.Weight)
+  #loader.PrepareTrainingAndTestTree(sigCut, bkgCut, "nTrain_Signal=25000:nTrain_Background=25000:NormMode=NumEvents:!V")
   loader.PrepareTrainingAndTestTree(sigCut, bkgCut, "NormMode=NumEvents:!V")
 
   factory.BookMethod(loader, mva_type, mva_name, mva_settings)

@@ -106,7 +106,7 @@ def plot_roc_curve(train_tree, test_tree, input_name, sig_train, sig_test, mva_n
 	roc_test.Draw("a l")
 	roc_train.Draw("same l")
 
-	leg = TLegend(0.2, 0.2, 0.5, 0.4)
+	leg = TLegend(0.2, 0.2, 0.666666, 0.4)
 	leg.AddEntry(roc_train, "Train: %s @%s/fb" % (sig_train, lumi), "l")
 	leg.AddEntry(roc_test, "Test: %s @%s/fb" % (sig_test, lumi), "l")
 	leg.Draw("same")
@@ -118,7 +118,7 @@ def plot_and_get_sig(train_tree, test_tree, input_name, total_sig, total_bkg, nb
 	sig_train = get_sig(train_tree, "train", mva_name, total_sig, total_bkg, lumi, nbins, min, max)
 	sig_test = get_sig(test_tree, "test", mva_name, total_sig, total_bkg, lumi, nbins, min, max)
 
-	set_graph_style(sig_train, kCyan+2)
+	set_graph_style(sig_train, kRed+1)
 	set_graph_style(sig_test, kBlack)
 
 	sig_test.SetTitle(";%s;significance" % mva_name)

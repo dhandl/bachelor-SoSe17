@@ -73,7 +73,7 @@ def AtlasStyle():
   # put tick marks on top and RHS of plots
   atlasStyle.SetPadTickX(1)
   atlasStyle.SetPadTickY(1)
-  atlasStyle.SetPalette(1)
+  atlasStyle.SetPalette(kLightTemperature)
   return atlasStyle
 
 from ROOT import TLatex, gPad

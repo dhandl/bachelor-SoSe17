@@ -21,5 +21,5 @@ export PATH=$PATH:$WorkDir/ML/scripts
 export PATH=$PATH:$WorkDir/ML/bin
 export PYTHONPATH=$PYTHONPATH:$WorkDir/python
 
-lsetup "root 6.08.06-x86_64-slc6-gcc49-opt"
+lsetup "root 6.10.04-x86_64-slc6-gcc49-opt"
 

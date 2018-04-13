@@ -8,8 +8,11 @@
 *.eps
 *.root
 *.sh.*
+ML/config
 ML/config/*
+ML/examples
 ML/examples/*
+ML/fbm.2004-11-10
 ML/fbm.2004-11-10/*
 
 ### Python ###

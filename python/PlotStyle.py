@@ -329,7 +329,7 @@ def _init_style():
 	Style.SetTitleXOffset(1.2)
 	Style.SetTitleYOffset(1.3)
 
-	Style.SetPalette(51)
+	Style.SetPalette(kLightTemperature)
 
 	TGaxis.SetMaxDigits(4)
 

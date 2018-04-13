@@ -8,6 +8,21 @@ import os
 
 #############################
 
+def color(S):
+  s=S.lower()
+  if "singletop" in s:
+    return TColor.GetColor("#82DE68")
+  if ("ttjets" in s) or ("ttbar" in s) or ("tt+jets" in s):
+    return TColor.GetColor("#0F75DB")
+  if ("wjets" in s) or ("w+jets" in s):
+    return TColor.GetColor("#FCDD5D")
+  if "ttv" in s or "ttz" in s or "ttw" in s or "tth" in s:
+    return TColor.GetColor("#E67067")
+  if "diboson" in s:
+    return TColor.GetColor("#54C571")
+  if 'data' in s:
+    return kBlack
+
 def load_input(input_name, directory="output"):
   fileName = directory + "/" + input_name + ".root"
   f = TFile.Open(fileName)
@@ -132,14 +147,15 @@ def create_reader(variables, directory, name):
 def get_mlp_dist(tree, hist_name, mva_name, cut, nbins, min, max, norm=False):
   hist = TH1F(hist_name, "", nbins, min, max)
 
-  tree.Draw("%s>>%s" % (mva_name, hist_name), "(%s) * (mc_weight * sf_total * xs_weight)" % cut)
+  #FIXME what about weight_sherpa22_njets?
+  tree.Draw("%s>>%s" % (mva_name, hist_name), "(%s) * (mc_weight * sf_total * xs_weight * weight_sherpa22_njets)" % cut)
 
   if norm:
     hist.Scale(1. / hist.Integral())
 
   return hist
 
-def get_total_events(trees, cut, weights = "mc_weight * sf_total * xs_weight"):
+def get_total_events(trees, cut, weights = "mc_weight * sf_total * xs_weight * weight_sherpa22_njets"):
   h = TH1F("hxs", "", 1, 0, 2)
 
   for t in trees:
@@ -183,7 +199,7 @@ def get_roc_curve_hist(hist_sig, hist_bkg):
 
   roc = TGraph()
   pt = 0
-  for bin in xrange(1, hist_sig.GetNbinsX()):
+  for bin in xrange(1, hist_sig.GetNbinsX()+1):
     cut_sig = hist_sig.Integral(bin, hist_sig.GetNbinsX())
     cut_bkg = hist_bkg.Integral(bin, hist_bkg.GetNbinsX())
 
@@ -197,7 +213,7 @@ def get_sig_RooStats(sig_xs, bkg_xs, lumi, bUncert):
 
 def get_sig(tree, prefix, mva_name, total_sig, total_bkg, lumi, nbins=50, min=-1, max=1):
   sig_mlp_dist = get_mlp_dist(tree, prefix + "_mlp_sig", mva_name, "classID == 0", nbins, min, max)
-  bkg_mlp_dist = get_mlp_dist(tree, prefix + "_mlp_bkg", mva_name, "classID == 1", nbins, min, max)
+  bkg_mlp_dist = get_mlp_dist(tree, prefix + "_mlp_bkg", mva_name, "classID != 1", nbins, min, max)
   return get_sig_hist(sig_mlp_dist, bkg_mlp_dist, total_sig, total_bkg, lumi)
 
 

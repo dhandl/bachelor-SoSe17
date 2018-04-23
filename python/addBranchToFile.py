@@ -3,8 +3,11 @@
 import ROOT
 import os
 import sys
-from variables import new_var
 from array import array
+
+NEW_VAR = [
+           {"name":, "branch":"", "array":"", "datatype":"", "varFunc":, } 
+]
 
 def filesize(num):
   for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
@@ -22,7 +25,7 @@ def main():
     return
 
   # going to check whether EventWeight will be applied
-  for v in new_var:
+  for v in NEW_VAR:
     if v["name"] is "EventWeight":
       lumi = float(raw_input("Going to apply total event weight!\nPlease set int. luminosity(pb^-1): "))
 
@@ -39,7 +42,7 @@ def main():
       print "\nDEBUG: Copying " + name
       t = f.Get(name)
 
-      for v in new_var:
+      for v in NEW_VAR:
         v["branch"] = t.Branch(v["name"], v["array"], v["name"]+"/"+v["dataType"])
 
       n = t.GetEntries()
@@ -49,7 +52,7 @@ def main():
         t.GetEntry(i)
         assert (v.has_key('varString') or v.has_key('varFunc')), "Error: Did not specify 'varString' or 'varFunc' for variable %s" % repr(v)
         assert not (v.has_key('varString') and v.has_key('varFunc')), "Error: Specified both 'varString' and 'varFunc' for variable %s" % repr(v)
-        for v in new_var:
+        for v in NEW_VAR:
           varValue = getVarValue(t, v['varString']) if v.has_key('varString') else v['varFunc'](t)
           if v["name"] is "EventWeight":
             varValue = lumi * varValue
@@ -72,7 +75,7 @@ def main():
         return
 
   with open(varInfo, "w") as f:
-    for v in new_var:
+    for v in NEW_VAR:
       f.write(v["name"])
 
 if __name__ == "__main__":

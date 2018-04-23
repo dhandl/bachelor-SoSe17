@@ -1,4 +1,5 @@
 from ROOT import gROOT, TStyle
+import ROOT
 
 def SetAtlasStyle ():
   print "\nApplying ATLAS style settings..."
@@ -73,7 +74,7 @@ def AtlasStyle():
   # put tick marks on top and RHS of plots
   atlasStyle.SetPadTickX(1)
   atlasStyle.SetPadTickY(1)
-  atlasStyle.SetPalette(kLightTemperature)
+  atlasStyle.SetPalette(ROOT.kBird)
   return atlasStyle
 
 from ROOT import TLatex, gPad

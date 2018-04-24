@@ -108,4 +108,196 @@ def mThree(c):
   m_three = maxJ.M()
   return m_three*0.001 
 
+def dphi_jet12(c):
+    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
+    jet2Phi = c.GetLeaf('jet_phi').GetValue(1)
+    dphi = abs(jet1Phi - jet2Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    return dphi
 
+def deta_jet12(c):                                                  #sinnvoll eta und deltaR anzuschauen?
+    jet1Eta = c.GetLeaf('jet_eta').GetValue(0)
+    jet2Eta = c.GetLeaf('jet_eta').GetValue(1)
+    deta = abs(jet1Eta - jet2Eta)
+    return deta
+
+def dR_jet12(c):
+    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
+    jet2Phi = c.GetLeaf('jet_phi').GetValue(1)
+    dphi = abs(jet1Phi - jet2Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    jet1Eta = c.GetLeaf('jet_eta').GetValue(0)
+    jet2Eta = c.GetLeaf('jet_eta').GetValue(1)
+    deta = abs(jet1Eta - jet2Eta)
+    dR = sqrt(deta*deta + dphi*dphi)
+    return dR
+
+def dphi_lep_jet1(c):                                               #Winkel zwischen Lepton und anzunehmendem ISR-jet sinnvoll?
+    lepPhi = c.GetLeaf('lep_phi').GetValue(0)
+    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
+    dphi = abs(lepPhi - jet1Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    return dphi
+
+def deta_lep_jet1(c):
+    lepEta = c.GetLeaf('lep_eta').GetValue(0)
+    jet1Eta = c.GetLeaf('jet_eta').GetValue(0)
+    deta = abs(lepEta - jet1Eta)
+    return deta
+
+def dR_lep_jet1(c):
+    lepPhi = c.GetLeaf('lep_phi').GetValue(0)
+    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
+    dphi = abs(lepPhi - jet1Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    lepEta = c.GetLeaf('lep_eta').GetValue(0)
+    jet1Eta = c.GetLeaf('jet_eta').GetValue(0)
+    deta = abs(lepEta - jet1Eta)
+    dR = sqrt(deta*deta + dphi*dphi)
+    return dR
+
+def dphi_lep_jet2(c):                                               #Winkel zwischen Lepton und anzunehmendem b-jet sinnvoll?
+    lepPhi = c.GetLeaf('lep_phi').GetValue(0)
+    jet2Phi = c.GetLeaf('jet_phi').GetValue(1)
+    dphi = abs(lepPhi - jet2Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    return dphi
+
+def deta_lep_jet2(c):
+    lepEta = c.GetLeaf('lep_eta').GetValue(0)
+    jet2Eta = c.GetLeaf('jet_eta').GetValue(1)
+    deta = abs(lepEta - jet2Eta)
+    return deta
+
+def dR_lep_jet2(c):
+    lepPhi = c.GetLeaf('lep_phi').GetValue(0)
+    jet2Phi = c.GetLeaf('jet_phi').GetValue(1)
+    dphi = abs(lepPhi - jet2Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    lepEta = c.GetLeaf('lep_eta').GetValue(0)
+    jet2Eta = c.GetLeaf('jet_eta').GetValue(1)
+    deta = abs(lepEta - jet2Eta)
+    dR = sqrt(deta*deta + dphi*dphi)
+    return dR
+
+def met_over_squareroot_lepPt_softjetPt(c):                                     #Variationen der Met ueber Ht Variablen
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return met/(sqrt(ht))
+     
+
+def met_over_squareroot_ht(c):
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt   
+    return met/(sqrt(ht))
+
+def met_over_ht(c):
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt   
+    return met/(ht)
+
+def met_over_lepPt_softjetPt(c):                                     #Variationen der Met ueber Ht Variablen
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return met/ht
+
+def squareroot_lepPt_softjetPt_over_met(c):                                     #Andersherum?
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return (sqrt(ht))/met
+
+def squareroot_lepPt_softjetPt_over_met_square(c):                                     #Andersherum?
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return (sqrt(ht))/(met*met)
+
+
+def lep_pt_over_jet1_pt(c):                                                      #Lepton Pt und Jet Pt Vergleiche?
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    jetPt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    return lepPt/jetPt
+
+def lep_pt_over_jet2_pt(c):
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    jetPt = c.GetLeaf('jet_pt').GetValue(1) *0.001
+    return lepPt/jetPt
+    
+    
+def CT1(c):                                                                       #CMS Variable, kombiniert HT und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    ht = c.GetLeaf('ht').GetValue() *0.001
+    CT1 = 0.
+    if met < (ht-100):
+        CT1 = met
+    if met > (ht-100):
+        CT1 = (ht -100)
+    return CT1
+    
+    
+def CT2(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    CT2 = 0.
+    if met < (jet1Pt-25):
+        CT2 = met
+    if met > (jet1Pt-25):
+        CT2 = (jet1Pt -25)
+    return CT2
+    
+    
+def lep_jet1_energy_ratio(c):                                                         #Warum eigentlich nicht die Energie verwenden?
+    lepE = c.GetLeaf('lep_e').GetValue(0) *0.001
+    jetE = c.GetLeaf('jet_e').GetValue(0) *0.001
+    return lepE/jetE
+
+def lep_jet2_energy_ratio(c):                                                         
+    lepE = c.GetLeaf('lep_e').GetValue(0) *0.001
+    jetE = c.GetLeaf('jet_e').GetValue(1) *0.001
+    return lepE/jetE
+    
+    
+    
+    
+    
+    
+    
+    
+    

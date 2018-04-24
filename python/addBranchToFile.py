@@ -4,9 +4,90 @@ import ROOT
 import os
 import sys
 from array import array
+from math import *
+
+
+
+def dphi_jet12(c):
+    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
+    jet2Phi = c.GetLeaf('jet_phi').GetValue(1)
+    dphi = abs(jet1Phi - jet2Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    return dphi
+
+def dphi_lep_jet1(c):                                               #Winkel zwischen Lepton und anzunehmendem ISR-jet sinnvoll?
+    lepPhi = c.GetLeaf('lep_phi').GetValue(0)
+    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
+    dphi = abs(lepPhi - jet1Phi)
+    if dphi > pi:
+        dphi = 2*pi - dphi
+    return dphi
+
+def met_over_squareroot_lepPt_softjetPt(c):                                     #Variationen der Met ueber Ht Variablen
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return met/(sqrt(ht))
+
+def met_over_lepPt_softjetPt(c):                                     #Variationen der Met ueber Ht Variablen
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return met/ht
+
+def CT1(c):                                                                       #CMS Variable, kombiniert HT und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    ht = c.GetLeaf('ht').GetValue() *0.001
+    CT1 = 0.
+    if met < (ht-100):
+        CT1 = met
+    if met > (ht-100):
+        CT1 = (ht -100)
+    return CT1
+    
+    
+def CT2(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    CT2 = 0.
+    if met < (jet1Pt-25):
+        CT2 = met
+    if met > (jet1Pt-25):
+        CT2 = (jet1Pt -25)
+    return CT2
+
+def squareroot_lepPt_softjetPt_over_met(c):                                     #Andersherum?
+    met = c.GetLeaf('met').GetValue() *0.001
+    njet = c.GetLeaf('n_jet').GetValue()
+    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
+    ht = 0.
+    for i in range(1, int(njet)):
+        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
+        ht += jetpt 
+    ht += lepPt
+    return (sqrt(ht))/met
+
 
 NEW_VAR = [
-           {"name":, "branch":"", "array":"", "datatype":"", "varFunc":, } 
+           {"name":"met_over_sqrt_lepPt_softjetPt", "array":array("f", [0]), "dataType":"F", "varFunc":met_over_squareroot_lepPt_softjetPt},
+           {"name":"CT1", "array":array("f", [0]), "dataType":"F", "varFunc":CT1}, 
+           {"name":"CT2", "array":array("f", [0]), "dataType":"F", "varFunc":CT2},
+           {"name":"squareroot_lepPt_softjetPt_over_met", "array":array("f", [0]), "dataType":"F", "varFunc":squareroot_lepPt_softjetPt_over_met},
+           {"name":"met_over_lepPt_softjetPt", "array":array("f", [0]), "dataType":"F", "varFunc":met_over_lepPt_softjetPt}, 
+           {"name":"dphi_lep_jet1", "array":array("f", [0]), "dataType":"F", "varFunc":dphi_lep_jet1}, 
+           {"name":"dphi_jet12", "array":array("f", [0]), "dataType":"F", "varFunc":dphi_jet12},
+         #  {"name":"myNeufVariable", "array":array("f", [0]), "dataType":"F", "varFunc":calcMyVar},
 ]
 
 def filesize(num):
@@ -60,12 +141,12 @@ def main():
           v["branch"].Fill()
 
       t.Write()
-      f.Write()
+      #f.Write()
       f.Close()
 
     print "OK Saved {}".format(filesize(os.stat(fSrc).st_size))
 
-  varInfo = os.path.join(src, "new_var.txt")
+  varInfo = os.path.join(src, "new_var_vol1.txt")
   if os.path.exists(varInfo):
     while True:
       i = raw_input("'{}' exists. Should it be overwritten? (y|n) ".format(varInfo)).strip().lower()

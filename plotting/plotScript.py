@@ -47,7 +47,7 @@ def doRatio(hist1,hist2,Xtitle='',Ytitle='1/Default'):
   return h1
 
 
-wwwDir = "/home/j/Jan.Eckerlein/Praktikum/plots/"
+wwwDir = "/project/etp5/aschwemmer/bachelor-SoSe17/plots/"
 if not os.path.exists(wwwDir):
   os.makedirs(wwwDir)
 
@@ -59,7 +59,7 @@ sigDir = bkgDir
 
 lumi = 36100.
 weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets" 
-cut = "(n_jet>=4) && (mt>30000) && (met>230e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+cut = "(n_jet>=4) && (mt>0e3) && (met>230e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
 
 #----------------------------#
 normalized = False
@@ -83,12 +83,16 @@ allBkg = [
   {"name":"singletop", "legendName":"Single top", "target":bkgDir+"powheg_singletop/*", "color": ROOT.TColor.GetColor("#82DE68"), "chain_name":"powheg_singletop_Nom"}, 
   {"name":"wjets", "legendName":"W+jets", "target":bkgDir+"sherpa22_Wjets/*", "color": ROOT.TColor.GetColor("#FCDD5D"), "chain_name":"sherpa22_Wjets_Nom"}, 
   {"name":"ttbar1L", "legendName":"t#bar{t} 1L", "target":bkgDir+"powheg_ttbar/*", "color":ROOT.TColor.GetColor("#0F75DB"), "chain_name":"powheg_ttbar_Nom", "addCut":"( tt_cat==1 || tt_cat==4 || tt_cat==7 )" },
-  {"name":"ttbar2L", "legendName":"t#bar{t} 2L", "target":bkgDir+"powheg_ttbar/*", "color":ROOT.TColor.GetColor("#A5C6E8"), "chain_name":"powheg_ttbar_Nom", "addCut":"( tt_cat==0 || tt_cat==3 || tt_cat==6 )" },
-  {"name":"ttbar1L1tau", "legendName":"t#bar{t} 1L1#tau", "target":bkgDir+"powheg_ttbar/*", "color": ROOT.TColor.GetColor("#5E9AD6"), "chain_name":"powheg_ttbar_Nom", "addCut":"( tt_cat==2 || tt_cat == 5 ) "}, 
+  {"name":"ttbar2L", "legendName":"t#bar{t} 2L", "target":bkgDir+"powheg_ttbar/*", "color":ROOT.TColor.GetColor("#A5C6E8"), "chain_name":"powheg_ttbar_Nom", "addCut":"( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )" },
+  #{"name":"ttbar1L1tau", "legendName":"t#bar{t} 1L1#tau", "target":bkgDir+"powheg_ttbar/*", "color": ROOT.TColor.GetColor("#5E9AD6"), "chain_name":"powheg_ttbar_Nom", "addCut":"( tt_cat==2 || tt_cat == 5 ) "}, 
 ]
 
 allSignal = [
-  {"name":"stop_bWN_350_200", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(350,200)", "target":sigDir+"stop_bWN_350_200/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_350_200_Nom"},
+  {"name":"stop_bWN_350_200", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(350,200)", "target":sigDir+"stop_bWN_350_200/*", "color": ROOT.kBlue+2), "chain_name":"stop_bWN_350_200_Nom"},
+  {"name":"stop_bWN_400_250", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(400,250)", "target":sigDir+"stop_bWN_400_250/*", "color": ROOT.kRed), "chain_name":"stop_bWN_400_250_Nom"},
+  {"name":"stop_bWN_450_300", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(450,300)", "target":sigDir+"stop_bWN_450_300/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_450_300_Nom"},
+  {"name":"stop_bWN_500_350", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(500,350)", "target":sigDir+"stop_bWN_500_350/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_500_350_Nom"},
+  {"name":"stop_bWN_550_400", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(550,400)", "target":sigDir+"stop_bWN_550_400/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_550_400_Nom"},
 ]
 
 for i, sample in enumerate(allBkg+allSignal):
@@ -99,10 +103,21 @@ allVariables = []
 amt2 = {'name':'myAmt2', "fileName":fileName+"_amt2"+normString+logString, 'varStr':"amt2", 'Xtitle':'am_{T2}', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
 met = {'name':'myMET', "fileName":fileName+"_met"+normString+logString, 'varStr':"(met*0.001)", 'Xtitle':'E_{T}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
 dphi = {'name':'mydPhi', "fileName":fileName+"_dphi"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,4], "binningIsExplicit":False}
-mt = {}
+mt = {'name':'myMT',"fileName":fileName+"_mt"+normString+logString, 'varStr':"mt*0.001", 'Xtitle':'m_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+Q = {'name':'myQ',"fileName":fileName+"_Q"+normString+logString, 'varStr':"1-mt*mt/(2*met*lep_pt[0])", 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], "binningIsExplicit":False}
+njet = {'name':'mynjet',"fileName":fileName+"_njet"+normString+logString, 'varStr':"n_jet", 'Xtitle':'n_jet', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
+nbjet = {'name':'mynbjet',"fileName":fileName+"_nbjet"+normString+logString, 'varStr':"n_bjet", 'Xtitle':'n_bjet', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
+jetpt = {'name':'myjetpT',"fileName":fileName+"_jetpT"+normString+logString, 'varStr':"jet_pt", 'Xtitle':'p_{T}^{jet}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+
 
 allVariables.append(met)
 allVariables.append(dphi)
+allVariables.append(amt2)
+allVariables.append(mt)
+allVariables.append(Q)
+allVariables.append(njet)
+allVariables.append(nbjet)
+allVariables.append(jetpt)
 
 histos = {}
 
@@ -166,6 +181,8 @@ for var in allVariables:
     histos[sig['name']][var['name']].SetLineStyle(ROOT.kDashed)
     histos[sig['name']][var['name']].SetFillColor(0)
     histos[sig['name']][var['name']].SetMarkerStyle(0)
+    if histos['ttbar1L'][var['name']].Integral()>0.:
+        histos[sig['name']][var['name']].Scale(histos['ttbar1L'][var['name']].Integral()/histos[sig['name']][var['name']].Integral())
     histos[sig['name']][var['name']].Draw('hist same')
     legend.AddEntry(histos[sig['name']][var['name']], sig['legendName'])
                         

@@ -88,11 +88,11 @@ allBkg = [
 ]
 
 allSignal = [
-  {"name":"stop_bWN_350_200", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(350,200)", "target":sigDir+"stop_bWN_350_200/*", "color": ROOT.kBlue+2), "chain_name":"stop_bWN_350_200_Nom"},
-  {"name":"stop_bWN_400_250", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(400,250)", "target":sigDir+"stop_bWN_400_250/*", "color": ROOT.kRed), "chain_name":"stop_bWN_400_250_Nom"},
-  {"name":"stop_bWN_450_300", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(450,300)", "target":sigDir+"stop_bWN_450_300/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_450_300_Nom"},
-  {"name":"stop_bWN_500_350", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(500,350)", "target":sigDir+"stop_bWN_500_350/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_500_350_Nom"},
-  {"name":"stop_bWN_550_400", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(550,400)", "target":sigDir+"stop_bWN_550_400/*", "color": ROOT.TColor.GetColor(ROOT.kBlue+2), "chain_name":"stop_bWN_550_400_Nom"},
+  {"name":"stop_bWN_350_200", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(350,200)", "target":sigDir+"stop_bWN_350_200/*", "color": ROOT.kBlue+2, "chain_name":"stop_bWN_350_200_Nom"},
+  {"name":"stop_bWN_400_250", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(400,250)", "target":sigDir+"stop_bWN_400_250/*", "color": ROOT.kRed, "chain_name":"stop_bWN_400_250_Nom"},
+  {"name":"stop_bWN_450_300", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(450,300)", "target":sigDir+"stop_bWN_450_300/*", "color": ROOT.kGreen, "chain_name":"stop_bWN_450_300_Nom"},
+  {"name":"stop_bWN_500_350", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(500,350)", "target":sigDir+"stop_bWN_500_350/*", "color": ROOT.kMagenta, "chain_name":"stop_bWN_500_350_Nom"},
+  {"name":"stop_bWN_550_400", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(550,400)", "target":sigDir+"stop_bWN_550_400/*", "color": ROOT.kCyan, "chain_name":"stop_bWN_550_400_Nom"},
 ]
 
 for i, sample in enumerate(allBkg+allSignal):
@@ -102,12 +102,14 @@ for i, sample in enumerate(allBkg+allSignal):
 allVariables = []
 amt2 = {'name':'myAmt2', "fileName":fileName+"_amt2"+normString+logString, 'varStr':"amt2", 'Xtitle':'am_{T2}', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
 met = {'name':'myMET', "fileName":fileName+"_met"+normString+logString, 'varStr':"(met*0.001)", 'Xtitle':'E_{T}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
-dphi = {'name':'mydPhi', "fileName":fileName+"_dphi"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,4], "binningIsExplicit":False}
+dphi = {'name':'mydPhi', "fileName":fileName+"_dphi"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
 mt = {'name':'myMT',"fileName":fileName+"_mt"+normString+logString, 'varStr':"mt*0.001", 'Xtitle':'m_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 Q = {'name':'myQ',"fileName":fileName+"_Q"+normString+logString, 'varStr':"1-mt*mt/(2*met*lep_pt[0])", 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], "binningIsExplicit":False}
 njet = {'name':'mynjet',"fileName":fileName+"_njet"+normString+logString, 'varStr':"n_jet", 'Xtitle':'n_jet', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
 nbjet = {'name':'mynbjet',"fileName":fileName+"_nbjet"+normString+logString, 'varStr':"n_bjet", 'Xtitle':'n_bjet', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
-jetpt = {'name':'myjetpT',"fileName":fileName+"_jetpT"+normString+logString, 'varStr':"jet_pt", 'Xtitle':'p_{T}^{jet}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+jetpt = {'name':'myjetpT',"fileName":fileName+"_jetpT"+normString+logString, 'varStr':"jet_pt*0.001", 'Xtitle':'p_{T}^{jet}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+ht = {'name':'myht',"fileName":fileName+"_hT"+normString+logString, 'varStr':"ht*0.001", 'Xtitle':'h_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+dphi_jet0_ptmiss = {'name':'mydPhi_jet0ptmiss', "fileName":fileName+"_dphi_jet0_ptmiss"+normString+logString, 'varStr':"dphi_jet0_ptmiss", 'Xtitle':'#Delta#phi(jet0, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
 
 
 allVariables.append(met)
@@ -118,6 +120,8 @@ allVariables.append(Q)
 allVariables.append(njet)
 allVariables.append(nbjet)
 allVariables.append(jetpt)
+allVariables.append(ht)
+allVariables.append(dphi_jet0_ptmiss)
 
 histos = {}
 

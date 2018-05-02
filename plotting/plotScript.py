@@ -100,6 +100,7 @@ for i, sample in enumerate(allBkg+allSignal):
   sample["chain"].Add(sample["target"])
 
 allVariables = []
+
 amt2 = {'name':'myAmt2', "fileName":fileName+"_amt2"+normString+logString, 'varStr':"amt2", 'Xtitle':'am_{T2}', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
 met = {'name':'myMET', "fileName":fileName+"_met"+normString+logString, 'varStr':"(met*0.001)", 'Xtitle':'E_{T}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
 dphi = {'name':'mydPhi', "fileName":fileName+"_dphi"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
@@ -110,7 +111,8 @@ nbjet = {'name':'mynbjet',"fileName":fileName+"_nbjet"+normString+logString, 'va
 jetpt = {'name':'myjetpT',"fileName":fileName+"_jetpT"+normString+logString, 'varStr':"jet_pt*0.001", 'Xtitle':'p_{T}^{jet}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 ht = {'name':'myht',"fileName":fileName+"_hT"+normString+logString, 'varStr':"ht*0.001", 'Xtitle':'h_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 dphi_jet0_ptmiss = {'name':'mydPhi_jet0ptmiss', "fileName":fileName+"_dphi_jet0_ptmiss"+normString+logString, 'varStr':"dphi_jet0_ptmiss", 'Xtitle':'#Delta#phi(jet0, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
-
+dphi_jet1_ptmiss = {'name':'mydPhi_jet1ptmiss', "fileName":fileName+"_dphi_jet1_ptmiss"+normString+logString, 'varStr':"dphi_jet1_ptmiss", 'Xtitle':'#Delta#phi(jet1, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
+amm = {'name':'myamm',"fileName":fileName+"_amm"+normString+logString, 'varStr':"met*lep_pt[0]*0.001*0.001", 'Xtitle':'amm', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 
 allVariables.append(met)
 allVariables.append(dphi)
@@ -122,6 +124,8 @@ allVariables.append(nbjet)
 allVariables.append(jetpt)
 allVariables.append(ht)
 allVariables.append(dphi_jet0_ptmiss)
+allVariables.append(dphi_jet1_ptmiss)
+allVariables.append(amm)
 
 histos = {}
 

@@ -59,7 +59,7 @@ sigDir = bkgDir
 
 lumi = 36100.
 weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets" 
-cut = "(n_jet>=4) && (mt>0e3) && (met>230e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+cut = "(n_jet>=4) && (mt>90e3) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
 
 #----------------------------#
 normalized = False
@@ -106,13 +106,13 @@ met = {'name':'myMET', "fileName":fileName+"_met"+normString+logString, 'varStr'
 dphi = {'name':'mydPhi', "fileName":fileName+"_dphi"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
 mt = {'name':'myMT',"fileName":fileName+"_mt"+normString+logString, 'varStr':"mt*0.001", 'Xtitle':'m_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 Q = {'name':'myQ',"fileName":fileName+"_Q"+normString+logString, 'varStr':"1-mt*mt/(2*met*lep_pt[0])", 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], "binningIsExplicit":False}
-njet = {'name':'mynjet',"fileName":fileName+"_njet"+normString+logString, 'varStr':"n_jet", 'Xtitle':'n_jet', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
-nbjet = {'name':'mynbjet',"fileName":fileName+"_nbjet"+normString+logString, 'varStr':"n_bjet", 'Xtitle':'n_bjet', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
+njet = {'name':'mynjet',"fileName":fileName+"_njet"+normString+logString, 'varStr':"n_jet", 'Xtitle':'N jets', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
+nbjet = {'name':'mynbjet',"fileName":fileName+"_nbjet"+normString+logString, 'varStr':"n_bjet", 'Xtitle':'N bjets', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
 jetpt = {'name':'myjetpT',"fileName":fileName+"_jetpT"+normString+logString, 'varStr':"jet_pt*0.001", 'Xtitle':'p_{T}^{jet}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 ht = {'name':'myht',"fileName":fileName+"_hT"+normString+logString, 'varStr':"ht*0.001", 'Xtitle':'h_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 dphi_jet0_ptmiss = {'name':'mydPhi_jet0ptmiss', "fileName":fileName+"_dphi_jet0_ptmiss"+normString+logString, 'varStr':"dphi_jet0_ptmiss", 'Xtitle':'#Delta#phi(jet0, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
 dphi_jet1_ptmiss = {'name':'mydPhi_jet1ptmiss', "fileName":fileName+"_dphi_jet1_ptmiss"+normString+logString, 'varStr':"dphi_jet1_ptmiss", 'Xtitle':'#Delta#phi(jet1, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
-amm = {'name':'myamm',"fileName":fileName+"_amm"+normString+logString, 'varStr':"met*lep_pt[0]*0.001*0.001", 'Xtitle':'amm', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+amm = {'name':'myamm',"fileName":fileName+"_amm"+normString+logString, 'varStr':"(met*lep_pt[0])*(0.001*0.001)", 'Xtitle':'amm', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
 
 allVariables.append(met)
 allVariables.append(dphi)
@@ -125,7 +125,7 @@ allVariables.append(jetpt)
 allVariables.append(ht)
 allVariables.append(dphi_jet0_ptmiss)
 allVariables.append(dphi_jet1_ptmiss)
-allVariables.append(amm)
+#allVariables.append(amm)
 
 histos = {}
 

@@ -15,7 +15,7 @@ ROOT.gStyle.SetOptStat(0)
 
 ROOT.TGaxis().SetMaxDigits(4)
 
-wwwDir = "/afs/cern.ch/user/d/dhandl/www/Run2/SUSY/Stop1l/2dPlots/scatterplot/"
+wwwDir = "/project/etp5/aschwemmer/bachelor-SoSe17/plots/"
 if not os.path.exists(wwwDir):
   os.makedirs(wwwDir)
 

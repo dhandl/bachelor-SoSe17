@@ -12,14 +12,15 @@ def plot(var1, var2, sampleName, xtitle, ytitle, cut, fileName):
 
     ROOT.TGaxis().SetMaxDigits(4)
 
-    wwwDir = "/project/etp5/aschwemmer/bachelor-SoSe17/plots/"
+    wwwDir = "/project/etp5/aschwemmer/bachelor-SoSe17/plots/2D/"
     if not os.path.exists(wwwDir):
         os.makedirs(wwwDir)
+        print ('Creating Directory ', wwwDir)
 
     sampleDir = '/project/etp5/dhandl/samples/SUSY/Stop1L/'
     
-    fileName = fileName +'_'+var1+'vs'+var2
-    fileName = fileName.replace('*0.001','').replace('/','D')
+    #fileName = fileName +'_'+var1+'vs'+var2
+    #fileName = fileName.replace('*0.001','').replace('/','D')
 
     c=ROOT.TChain(sampleName+'_Nom')
     c.Add(sampleDir+sampleName+'/*')
@@ -111,13 +112,14 @@ def main():
     
     variables = ['amt2','ht*0.001','met*0.001','n_jet','n_bjet','dphi_met_lep', '1-mt*mt/(2*met*lep_pt[0])', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss']
     names = ["am_{T2}", 'h_{T}', 'E_{T}^{miss}', 'N jets', 'N bjets', '#Delta#phi(l, E_{T}^{miss})', 'Q', '#Delta#phi(jet0, p_{T}^{miss})', '#Delta#phi(jet1, p_{T}^{miss})']
+    filenames = ['amT2', 'hT', 'met', 'n_jet', 'n_bjet', 'dphi_met_lep', 'Q', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss']
     
     for i in range(0,len(variables)):
         for j in range(0, len(variables)):
             if (i>j):
-                plot(variables[i],variables[j],sampleName,names[j],names[i],cut, fileName)
+                plot(variables[i],variables[j],sampleName,names[j],names[i],cut, fileName +'_'+filenames[i]+'vs'+filenames[j])
                 
-    filepath = './plots/' + fileName + '_infofile.txt'
+    filepath = './plots/2D/' + fileName + '_infofile.txt'
     
     print 'Saving infofile to' + filepath
     infofile = open(filepath, 'w')

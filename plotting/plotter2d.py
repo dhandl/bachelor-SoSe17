@@ -105,27 +105,43 @@ def main():
     
     #cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((stxe_trigger) && (n_jet>=4) && (jet_pt[0]>50e3) && (jet_pt[1]>25e3) && (jet_pt[2]>25e3) && (jet_pt[3]>25e3) && (mt>130e3) && (met>300e3) && (amt2<110) && (dphi_met_lep<2.5) && (n_bjet>0) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) ) )"
     
-    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (jet_pt[0]>25e3) && (jet_pt[1]>25e3) && (jet_pt[2]>25e3) && (jet_pt[3]>25e3) && (mt>90e3) && (met>100e3) && (n_bjet>0) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) ) )"
+    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (jet_pt[0]>25e3) && (jet_pt[1]>25e3) && (jet_pt[2]>25e3) && (jet_pt[3]>25e3) && (mt>90e3) && (met>100e3) && (n_bjet>0) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (ht>=220e3)) )"
+        
+    sampleNames = []
     
-    #sampleName = 'stop_bWN_300_150'
-    sampleName = 'powheg_singletop'
-    fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "nominal_"+sampleName
+    sampleNames.append('stop_bWN_300_150')
+    #sampleNames.append('powheg_ttbar')
+    #sampleNames.append('powheg_singletop')
+    #sampleNames.append('sherpa22_Wjets')
+        
+    for sampleName in sampleNames:
     
-    variables = ['amt2','ht*0.001','met*0.001','n_jet','n_bjet','dphi_met_lep', '1-mt*mt/(2*met*lep_pt[0])', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss','m_bl*0.001']
-    names = ["am_{T2}", 'h_{T}', 'E_{T}^{miss}', 'N jets', 'N bjets', '#Delta#phi(l, E_{T}^{miss})', 'Q', '#Delta#phi(jet0, p_{T}^{miss})', '#Delta#phi(jet1, p_{T}^{miss})','m_{b,l}']
-    filenames = ['amT2', 'hT', 'met', 'n_jet', 'n_bjet', 'dphi_met_lep', 'Q', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss','m_bl']
+        fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "nominal_"+sampleName
+        #fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "debugging_"+sampleName
     
-    for i in range(0,len(variables)):
-        for j in range(0, len(variables)):
-            if (i>j):
-                plot(variables[i],variables[j],sampleName,names[j],names[i],cut, fileName +'_'+filenames[i]+'vs'+filenames[j])
+        variables = ['amt2','ht*0.001','met*0.001','n_jet','n_bjet','dphi_met_lep', '1-mt*mt/(2*met*lep_pt[0])', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss','m_bl*0.001','mt*0.001']
+        names = ["am_{T2}", 'h_{T}', 'E_{T}^{miss}', 'N jets', 'N bjets', '#Delta#phi(l, E_{T}^{miss})', 'Q', '#Delta#phi(jet0, p_{T}^{miss})', '#Delta#phi(jet1, p_{T}^{miss})','m_{b,l}','m_{T}']
+        filenames = ['amT2', 'hT', 'met', 'n_jet', 'n_bjet', 'dphi_met_lep', 'Q', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss','m_bl', 'mT']
+    
+        countdiagrams = len(variables)*(len(variables)-1)/2
+        nod = countdiagrams
+    
+        print 'Plotting ' + str(countdiagrams) + ' diagrams...'
+    
+        for i in range(0,len(variables)):
+            for j in range(0, len(variables)):
+                if (i>j):
+                    plot(variables[i],variables[j],sampleName,names[j],names[i],cut, fileName +'_'+filenames[i]+'vs'+filenames[j])
+                    countdiagrams -= 1
+                    print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
+              
                 
-    filepath = './plots/2D/' + fileName + '_infofile.txt'
+        filepath = './plots/2D/' + fileName + '_infofile.txt'
     
-    print 'Saving infofile to' + filepath
-    infofile = open(filepath, 'w')
-    infofile.write('Applied cuts: ' + cut)
-    infofile.close()
+        print 'Saving infofile to' + filepath
+        infofile = open(filepath, 'w')
+        infofile.write('Applied cuts: ' + cut)
+        infofile.close()
 
 if __name__ == "__main__":
     main()

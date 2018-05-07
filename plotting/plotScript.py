@@ -253,9 +253,13 @@ def main():
     ht = {'name':'myht',"fileName":fileName+"_hT"+normString+logString, 'varStr':"ht*0.001", 'Xtitle':'h_{T}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
     dphi_jet0_ptmiss = {'name':'mydPhi_jet0ptmiss', "fileName":fileName+"_dphi_jet0_ptmiss"+normString+logString, 'varStr':"dphi_jet0_ptmiss", 'Xtitle':'#Delta#phi(jet0, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
     dphi_jet1_ptmiss = {'name':'mydPhi_jet1ptmiss', "fileName":fileName+"_dphi_jet1_ptmiss"+normString+logString, 'varStr':"dphi_jet1_ptmiss", 'Xtitle':'#Delta#phi(jet1, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
-    amm = {'name':'myamm',"fileName":fileName+"_amm"+normString+logString, 'varStr':"(met*0.001)*(lep_pt[0]*0.001)", 'Xtitle':'amm', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+    #amm = {'name':'myamm',"fileName":fileName+"_amm"+normString+logString, 'varStr':"(met*0.001)*(lep_pt[0]*0.001)", 'Xtitle':'amm', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
     leppt0 = {'name':'myleppt0',"fileName":fileName+"_lep_pt0"+normString+logString, 'varStr':"lep_pt[0]*0.001", 'Xtitle':'p_{T}^{lep}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
     mbl = {'name':'mymbl',"fileName":fileName+"_m_bl"+normString+logString, 'varStr':"m_bl*0.001", 'Xtitle':'m_{b,l}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+    jetpt0 = {'name':'myjetpT0',"fileName":fileName+"_jetpT0"+normString+logString, 'varStr':"jet_pt[0]*0.001", 'Xtitle':'p_{T}^{jet0}', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+    lep_phi = {'name':'mylphi', "fileName":fileName+"_lep_phi"+normString+logString, 'varStr':"lep_phi", 'Xtitle':'#phi(l)', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
+    lep_eta = {'name':'mydPhi', "fileName":fileName+"_lep_eta"+normString+logString, 'varStr':"lep_eta", 'Xtitle':'#eta(l)', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
+    R = {'name':'myR', "fileName":fileName+"_R"+normString+logString, 'varStr':"lep_phi*lep_phi+lep_eta*lep_eta", 'Xtitle':'R', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
 
     allVariables.append(met)
     allVariables.append(dphi)
@@ -268,11 +272,15 @@ def main():
     allVariables.append(ht)
     allVariables.append(dphi_jet0_ptmiss)
     allVariables.append(dphi_jet1_ptmiss)
-    allVariables.append(amm)
+    #allVariables.append(amm)
     allVariables.append(leppt0)
     allVariables.append(mbl)
+    allVariables.append(jetpt0)
+    #allVariables.append(lep_phi)
+    #allVariables.append(lep_eta)
+    #allVariables.append(R)
     
-    cut = "(n_jet>=4) && (mt>90e3) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+    cut = "(n_jet>=4) && (mt>90e3) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (ht>=220e3)"
     
     weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets"
     

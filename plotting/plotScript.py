@@ -274,9 +274,9 @@ def main():
 
 
     allVariables.append(met)
+    allVariables.append(mt)
     allVariables.append(dphi)
     allVariables.append(amt2)
-    allVariables.append(mt)
     allVariables.append(Q)
     allVariables.append(njet)
     allVariables.append(nbjet)
@@ -303,7 +303,7 @@ def main():
     allVariables.append(bjetpt)
     allVariables.append(mTblMET)
     
-    cut = "(n_jet>=4) && (mt>150e3) && (met>180e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+    cut = "(n_jet>=4) && (mt>110e3) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
     
     weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets"
     

@@ -126,8 +126,8 @@ def main():
         
     for sampleName in sampleNames:
     
-        #fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "nominal_"+sampleName
-        fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "debugging_"+sampleName
+        fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "nominal_"+sampleName
+        #fileName = datetime.now().strftime('%Y-%m-%d_%H-%M_') + "debugging_"+sampleName
         
         #allVariables = []
         
@@ -159,7 +159,7 @@ def main():
 
         amt2 = {'name':'myAmt2', "fileName":"amt2", 'varStr':"amt2", 'Xtitle':'am_{T2} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
         met = {'name':'myMET', "fileName":"met", 'varStr':"(met*0.001)", 'Xtitle':'E_{T}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
-        dphi = {'name':'mydPhi', "fileName":"dphi", 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
+        dphimetlep = {'name':'mydPhi', "fileName":"dphi_met_lep", 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
         mt = {'name':'myMT',"fileName":"mt", 'varStr':"mt*0.001", 'Xtitle':'m_{T} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
         Q = {'name':'myQ',"fileName":"Q", 'varStr':"1-mt*mt/(2*met*lep_pt[0])", 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], "binningIsExplicit":False}
         njet = {'name':'mynjet',"fileName":"njet", 'varStr':"n_jet", 'Xtitle':'N jets', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
@@ -189,34 +189,34 @@ def main():
 
 
         allVariables.append(met)
-        allVariables.append(dphi)
+        allVariables.append(dphimetlep)
         allVariables.append(amt2)
         allVariables.append(mt)
         allVariables.append(Q)
         #allVariables.append(njet)
         #allVariables.append(nbjet)
-        #allVariables.append(jetpt)
-        #allVariables.append(ht)
-        #allVariables.append(dphi_jet0_ptmiss)
-        #allVariables.append(dphi_jet1_ptmiss)
-        ##allVariables.append(amm)
+        allVariables.append(jetpt)
+        allVariables.append(ht)
+        allVariables.append(dphi_jet0_ptmiss)
+        allVariables.append(dphi_jet1_ptmiss)
+        #allVariables.append(amm)
         #allVariables.append(leppt0)
-        #allVariables.append(mbl)
-        ##allVariables.append(lep_phi)
-        ##allVariables.append(lep_eta)
-        ##allVariables.append(R)
-        #allVariables.append(jetpt0)
-        #allVariables.append(jetpt1)
-        #allVariables.append(jetpt2)
-        #allVariables.append(jetpt3)
-        #allVariables.append(metsig)
-        #allVariables.append(htsig)
-        #allVariables.append(dphi_b_lep_max)
-        #allVariables.append(dphi_b_ptmiss_max)
-        #allVariables.append(metprojlep)
-        #allVariables.append(dRbjetlep)
-        #allVariables.append(bjetpt)
-        #allVariables.append(mTblMET)
+        allVariables.append(mbl)
+        #allVariables.append(lep_phi)
+        #allVariables.append(lep_eta)
+        #allVariables.append(R)
+        allVariables.append(jetpt0)
+        allVariables.append(jetpt1)
+        allVariables.append(jetpt2)
+        allVariables.append(jetpt3)
+        allVariables.append(metsig)
+        allVariables.append(htsig)
+        allVariables.append(dphi_b_lep_max)
+        allVariables.append(dphi_b_ptmiss_max)
+        allVariables.append(metprojlep)
+        allVariables.append(dRbjetlep)
+        allVariables.append(bjetpt)
+        allVariables.append(mTblMET)
         
         #names = ["am_{T2}", 'h_{T}', 'E_{T}^{miss}', 'N jets', 'N bjets', '#Delta#phi(l, E_{T}^{miss})', 'Q', '#Delta#phi(jet0, p_{T}^{miss})', '#Delta#phi(jet1, p_{T}^{miss})','m_{b,l}','m_{T}']
         #variables = ['amt2','ht*0.001','met*0.001','n_jet','n_bjet','#Delta#phi(l, E_{T}^{miss})', '1-mt*mt/(2*met*lep_pt[0])', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss','m_bl*0.001','mt*0.001']
@@ -225,15 +225,24 @@ def main():
         countdiagrams = len(allVariables)*(len(allVariables)-1)/2
         nod = countdiagrams
     
-        print 'Plotting ' + str(countdiagrams) + ' diagrams...'
+        #print 'Plotting ' + str(countdiagrams) + ' diagrams...'
     
-        for i in range(0,len(allVariables)):
-            for j in range(0, len(allVariables)):
-                if (i>j):
-                    plot(allVariables[i]['varStr'],allVariables[j]['varStr'],sampleName,allVariables[j]['Xtitle'],allVariables[i]['Xtitle'],cut, fileName +'_'+allVariables[i]['fileName']+'vs'+allVariables[j]['fileName'],allVariables[i]['binning'],allVariables[j]['binning'])
-                    countdiagrams -= 1
-                    print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
-              
+        #for i in range(0,len(allVariables)):
+            #for j in range(0, len(allVariables)):
+                #if (i>j):
+                    #plot(allVariables[i]['varStr'],allVariables[j]['varStr'],sampleName,allVariables[j]['Xtitle'],allVariables[i]['Xtitle'],cut, fileName +'_'+allVariables[i]['fileName']+'vs'+allVariables[j]['fileName'],allVariables[i]['binning'],allVariables[j]['binning'])
+                    #countdiagrams -= 1
+                    #print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
+                    
+                    
+        #-------------Plot one variable to the rest of the list-----------
+        
+        variab=mt  #Variable to plot
+        
+        print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
+        for var in allVariables:
+            if var['name'] != variab['name']:
+                plot(variab['varStr'],var['varStr'],sampleName,var['Xtitle'],variab['Xtitle'],cut, fileName +'_'+variab['fileName']+'vs'+var['fileName'],variab['binning'],var['binning'])
                 
         filepath = './plots/2D/' + fileName + '_infofile.txt'
     

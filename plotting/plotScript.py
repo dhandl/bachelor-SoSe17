@@ -303,11 +303,12 @@ def main():
     allVariables.append(bjetpt)
     allVariables.append(mTblMET)
     
-    cut = "(n_jet>=4) && (mt>110e3) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+    cut = "(n_jet>=4) && (n_lep==1) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (ht>=220e3)"
     
     weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets"
     
     print 'Saving infofile to ' + filepath
+    print 'Using cut: ' + cut
     infofile = open(filepath, 'w')
     infofile.write('Applied cuts: ' + cut + '\n')
     infofile.write('Used weights: ' + weight + '\n')

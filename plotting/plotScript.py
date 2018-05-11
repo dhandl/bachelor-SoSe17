@@ -244,7 +244,7 @@ def main():
 
     amt2 = {'name':'myAmt2', "fileName":fileName+"_amt2"+normString+logString, 'varStr':"amt2", 'Xtitle':'am_{T2} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
     met = {'name':'myMET', "fileName":fileName+"_met"+normString+logString, 'varStr':"(met*0.001)", 'Xtitle':'E_{T}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
-    dphi = {'name':'mydPhi', "fileName":fileName+"_dphi"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
+    dphi_met_lep = {'name':'mydPhi', "fileName":fileName+"_dphi_met_lep"+normString+logString, 'varStr':"dphi_met_lep", 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
     mt = {'name':'myMT',"fileName":fileName+"_mt"+normString+logString, 'varStr':"mt*0.001", 'Xtitle':'m_{T} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
     Q = {'name':'myQ',"fileName":fileName+"_Q"+normString+logString, 'varStr':"1-mt*mt/(2*met*lep_pt[0])", 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], "binningIsExplicit":False}
     njet = {'name':'mynjet',"fileName":fileName+"_njet"+normString+logString, 'varStr':"n_jet", 'Xtitle':'N jets', 'Ytitle':'Events', 'binning':[10,0,10], "binningIsExplicit":False}
@@ -275,7 +275,7 @@ def main():
 
     allVariables.append(met)
     allVariables.append(mt)
-    allVariables.append(dphi)
+    allVariables.append(dphi_met_lep)
     allVariables.append(amt2)
     allVariables.append(Q)
     allVariables.append(njet)
@@ -303,7 +303,7 @@ def main():
     allVariables.append(bjetpt)
     allVariables.append(mTblMET)
     
-    cut = "(n_jet>=4) && (n_lep==1) && (met>100e3) && (n_bjet>=1) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (ht>=220e3)"
+    cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=100e3) && (mt>=90e3) &&(ht>=200e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
     
     weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets"
     

@@ -303,7 +303,9 @@ def main():
     allVariables.append(bjetpt)
     allVariables.append(mTblMET)
     
-    cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=200e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && ( (dphi_b_lep_max<2.5) || (dphi_b_lep_max>2.5 && ((ht>300e3) || (ht<200e3)) ) ) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+    #cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=200e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && ( (dphi_b_lep_max<2.5) || (dphi_b_lep_max>2.5 && ((ht>300e3) || (ht<200e3)) ) ) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+    
+    cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=200e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
     
     weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets"
     
@@ -321,7 +323,11 @@ def main():
     #for var in var2:    
         #plot(var, fileName, cut, weight, allSignal, allBkg)
         
-    for var in allVariables:    
+    counter = len(allVariables)
+        
+    for var in allVariables:
+        print '--------', counter, ' variables remaining to plot--------'
+        counter -= 1
         plot(var, fileName, cut, weight, allSignal, allBkg)
     
 if __name__=='__main__':

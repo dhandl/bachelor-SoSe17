@@ -214,13 +214,20 @@ allBkg = [
 #{"name":"ttbar1L1tau", "legendName":"t#bar{t} 1L1#tau", "target":bkgDir+"powheg_ttbar/*", "color": ROOT.TColor.GetColor("#5E9AD6"), "chain_name":"powheg_ttbar_Nom", "addCut":"( tt_cat==2 || tt_cat == 5 ) "}, 
 ]
 
+#allSignal = [
+#{"name":"stop_bWN_350_200", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(350,200)", "target":sigDir+"stop_bWN_350_200/*", "color": ROOT.kBlue+2, "chain_name":"stop_bWN_350_200_Nom"},
+#{"name":"stop_bWN_400_250", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(400,250)", "target":sigDir+"stop_bWN_400_250/*", "color": ROOT.kRed, "chain_name":"stop_bWN_400_250_Nom"},
+#{"name":"stop_bWN_450_300", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(450,300)", "target":sigDir+"stop_bWN_450_300/*", "color": ROOT.kGreen, "chain_name":"stop_bWN_450_300_Nom"},
+#{"name":"stop_bWN_500_350", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(500,350)", "target":sigDir+"stop_bWN_500_350/*", "color": ROOT.kMagenta, "chain_name":"stop_bWN_500_350_Nom"},
+#{"name":"stop_bWN_550_400", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(550,400)", "target":sigDir+"stop_bWN_550_400/*", "color": ROOT.kCyan, "chain_name":"stop_bWN_550_400_Nom"},
+#]
+
 allSignal = [
-{"name":"stop_bWN_350_200", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(350,200)", "target":sigDir+"stop_bWN_350_200/*", "color": ROOT.kBlue+2, "chain_name":"stop_bWN_350_200_Nom"},
-{"name":"stop_bWN_400_250", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(400,250)", "target":sigDir+"stop_bWN_400_250/*", "color": ROOT.kRed, "chain_name":"stop_bWN_400_250_Nom"},
-{"name":"stop_bWN_450_300", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(450,300)", "target":sigDir+"stop_bWN_450_300/*", "color": ROOT.kGreen, "chain_name":"stop_bWN_450_300_Nom"},
-{"name":"stop_bWN_500_350", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(500,350)", "target":sigDir+"stop_bWN_500_350/*", "color": ROOT.kMagenta, "chain_name":"stop_bWN_500_350_Nom"},
-{"name":"stop_bWN_550_400", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(550,400)", "target":sigDir+"stop_bWN_550_400/*", "color": ROOT.kCyan, "chain_name":"stop_bWN_550_400_Nom"},
+{"name":"stop_bWN_550_400", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(550,400)", "target":sigDir+"stop_bWN_550_400/*", "color": ROOT.kGreen, "chain_name":"stop_bWN_550_400_Nom"},
+{"name":"stop_bWN_600_450", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(600,450)", "target":sigDir+"stop_bWN_600_450/*", "color": ROOT.kMagenta, "chain_name":"stop_bWN_600_450_Nom"},
+{"name":"stop_bWN_650_500", "legendName":"m(#tilde{t},#tilde{#chi}_{1}^{0})=(650,500)", "target":sigDir+"stop_bWN_650_500/*", "color": ROOT.kCyan, "chain_name":"stop_bWN_650_500_Nom"},
 ]
+
 
 for i, sample in enumerate(allBkg+allSignal):
     sample["chain"] = ROOT.TChain(sample["chain_name"])
@@ -307,7 +314,7 @@ def main():
     
     #cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=250e3) && (mt>=0e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
 
-    cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=250e3) && (mt>=0e3) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
+    cut = "(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=100e3) && (mt>=0e3) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))"
     
     weight = str(lumi)+" * weight * xs_weight * sf_total * weight_sherpa22_njets"
     

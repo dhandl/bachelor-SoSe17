@@ -117,16 +117,16 @@ def main():
     
     #cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=100e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && ( (dphi_b_lep_max<2.5) || (dphi_b_lep_max>2.5 && ((ht>300e3) || (ht<200e3)) ) ) &&!((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))) )"
     
-    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=100e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) &&!((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))) )"
+    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=100e3) && (mt>=90e3) && (n_lep==1)) )"
         
     sampleNames = []
     
-    #sampleNames.append('stop_bWN_300_150')
-    #sampleNames.append('powheg_ttbar')
-    #sampleNames.append('powheg_singletop')
-    #sampleNames.append('sherpa22_Wjets')
+    sampleNames.append('stop_bWN_300_150')
+    sampleNames.append('powheg_ttbar')
+    sampleNames.append('powheg_singletop')
+    sampleNames.append('sherpa22_Wjets')
 
-    Signal=['stop_bWN_250_100','stop_bWN_300_150','stop_bWN_350_200','stop_bWN_400_250','stop_bWN_450_300','stop_bWN_500_350','stop_bWN_550_400','stop_bWN_600_450','stop_bWN_650_500','stop_bWN_250_130','stop_bWN_300_180','stop_bWN_350_230','stop_bWN_400_280','stop_bWN_450_330','stop_bWN_500_380','stop_bWN_550_430','stop_bWN_600_480','stop_bWN_650_530']
+    #Signal=['stop_bWN_250_100','stop_bWN_300_150','stop_bWN_350_200','stop_bWN_400_250','stop_bWN_450_300','stop_bWN_500_350','stop_bWN_550_400','stop_bWN_600_450','stop_bWN_650_500','stop_bWN_250_130','stop_bWN_300_180','stop_bWN_350_230','stop_bWN_400_280','stop_bWN_450_330','stop_bWN_500_380','stop_bWN_550_430','stop_bWN_600_480','stop_bWN_650_530']
 
     sampleNames.extend(Signal)
         
@@ -190,39 +190,40 @@ def main():
         dphi_b_ptmiss_max = {'name':'mydPhi_bptmissmax', "fileName":"dphi_b_ptmiss_max", 'varStr':"dphi_b_ptmiss_max", 'Xtitle':'max(#Delta#phi(b, p_{T}^{miss}))', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
         metprojlep = {'name':'myMETprojLEP', "fileName":"met_proj_lep", 'varStr':"met_proj_lep*0.001", 'Xtitle':'E_{T}^{miss} on l [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], "binningIsExplicit":False}
         dRbjetlep = {'name':'mydRbjetlep', "fileName":"dr_bjet_lep", 'varStr':"dr_bjet_lep", 'Xtitle':'#DeltaR(b,l)', 'Ytitle':'Events', 'binning':[40,0,3.2], "binningIsExplicit":False}
-        bjetpt = {'name':'myBjetpT',"fileName":"bjet_pt", 'varStr':"bjet_pt*0.001", 'Xtitle':'p_{T}^{bjet0} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+        bjetpt = {'name':'myBjetpT',"fileName":"bjet_pt", 'varStr':"bjet_pt*0.001", 'Xtitle':'p_{T}^{bjet} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
+        bjetpt0 = {'name':'myBjetpT0',"fileName":"bjet_pt0", 'varStr':"bjet_pt[0]*0.001", 'Xtitle':'p_{T}^{bjet0} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], "binningIsExplicit":False}
         mTblMET = {'name':'myMtblMet',"fileName":"mT_blMET", 'varStr':"mT_blMET*0.001", 'Xtitle':'m_{T}^{blMET} [GeV]', 'Ytitle':'Events', 'binning':[50,100,700], "binningIsExplicit":False}
 
 
-        #allVariables.append(met)
-        #allVariables.append(dphimetlep)
-        #allVariables.append(amt2)
-        #allVariables.append(mt)
+        allVariables.append(met)
+        allVariables.append(dphimetlep)
+        allVariables.append(amt2)
+        allVariables.append(mt)
         #allVariables.append(Q)
         #allVariables.append(njet)
         #allVariables.append(nbjet)
         #allVariables.append(jetpt)
-        #allVariables.append(ht)
-        #allVariables.append(dphi_jet0_ptmiss)
+        allVariables.append(ht)
+        allVariables.append(dphi_jet0_ptmiss)
         #allVariables.append(dphi_jet1_ptmiss)
         #allVariables.append(amm)
         #allVariables.append(leppt0)
-        #allVariables.append(mbl)
+        allVariables.append(mbl)
         #allVariables.append(lep_phi)
         #allVariables.append(lep_eta)
         #allVariables.append(R)
-        #allVariables.append(jetpt0)
+        allVariables.append(jetpt0)
         #allVariables.append(jetpt1)
         #allVariables.append(jetpt2)
         #allVariables.append(jetpt3)
-        #allVariables.append(metsig)
-        #allVariables.append(htsig)
+        allVariables.append(metsig)
+        allVariables.append(htsig)
         allVariables.append(dphi_b_lep_max)
         #allVariables.append(dphi_b_ptmiss_max)
-        #allVariables.append(metprojlep)
-        #allVariables.append(dRbjetlep)
+        allVariables.append(metprojlep)
+        allVariables.append(dRbjetlep)
         #allVariables.append(bjetpt)
-        #allVariables.append(mTblMET)
+        allVariables.append(mTblMET)
         
         #names = ["am_{T2}", 'h_{T}', 'E_{T}^{miss}', 'N jets', 'N bjets', '#Delta#phi(l, E_{T}^{miss})', 'Q', '#Delta#phi(jet0, p_{T}^{miss})', '#Delta#phi(jet1, p_{T}^{miss})','m_{b,l}','m_{T}']
         #variables = ['amt2','ht*0.001','met*0.001','n_jet','n_bjet','#Delta#phi(l, E_{T}^{miss})', '1-mt*mt/(2*met*lep_pt[0])', 'dphi_jet0_ptmiss', 'dphi_jet1_ptmiss','m_bl*0.001','mt*0.001']
@@ -234,24 +235,24 @@ def main():
         print 'Using cut: ' + cut
         
         
-        #print 'Plotting ' + str(countdiagrams) + ' diagrams...'
+        print 'Plotting ' + str(countdiagrams) + ' diagrams...'
     
-        #for i in range(0,len(allVariables)):
-            #for j in range(0, len(allVariables)):
-                #if (i>j):
-                    #plot(allVariables[i]['varStr'],allVariables[j]['varStr'],sampleName,allVariables[j]['Xtitle'],allVariables[i]['Xtitle'],cut, fileName +'_'+allVariables[i]['fileName']+'vs'+allVariables[j]['fileName'],allVariables[i]['binning'],allVariables[j]['binning'])
-                    #countdiagrams -= 1
-                    #print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
+        for i in range(0,len(allVariables)):
+            for j in range(0, len(allVariables)):
+                if (i>j):
+                    plot(allVariables[i]['varStr'],allVariables[j]['varStr'],sampleName,allVariables[j]['Xtitle'],allVariables[i]['Xtitle'],cut, fileName +'_'+allVariables[i]['fileName']+'vs'+allVariables[j]['fileName'],allVariables[i]['binning'],allVariables[j]['binning'])
+                    countdiagrams -= 1
+                    print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
                     
                     
         #-------------Plot one variable to the rest of the list-----------
         
-        variab=ht  #Variable to plot
+        #variab=ht  #Variable to plot
         
-        print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
-        for var in allVariables:
-            if var['name'] != variab['name']:
-                plot(variab['varStr'],var['varStr'],sampleName,var['Xtitle'],variab['Xtitle'],cut, fileName +'_'+variab['fileName']+'vs'+var['fileName'],variab['binning'],var['binning'])
+        #print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
+        #for var in allVariables:
+            #if var['name'] != variab['name']:
+                #plot(variab['varStr'],var['varStr'],sampleName,var['Xtitle'],variab['Xtitle'],cut, fileName +'_'+variab['fileName']+'vs'+var['fileName'],variab['binning'],var['binning'])
                 
         filepath = './plots/2D/' + fileName + '_infofile.txt'
     

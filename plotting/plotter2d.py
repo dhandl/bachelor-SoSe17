@@ -117,7 +117,7 @@ def main():
     
     #cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=100e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && ( (dphi_b_lep_max<2.5) || (dphi_b_lep_max>2.5 && ((ht>300e3) || (ht<200e3)) ) ) &&!((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))) )"
     
-    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=100e3) && (mt>=90e3) && (n_lep==1)) )"
+    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=250e3) && (mt>=90e3) && (n_lep==1)) )"
         
     sampleNames = []
     
@@ -128,7 +128,7 @@ def main():
 
     #Signal=['stop_bWN_250_100','stop_bWN_300_150','stop_bWN_350_200','stop_bWN_400_250','stop_bWN_450_300','stop_bWN_500_350','stop_bWN_550_400','stop_bWN_600_450','stop_bWN_650_500','stop_bWN_250_130','stop_bWN_300_180','stop_bWN_350_230','stop_bWN_400_280','stop_bWN_450_330','stop_bWN_500_380','stop_bWN_550_430','stop_bWN_600_480','stop_bWN_650_530']
 
-    sampleNames.extend(Signal)
+    #sampleNames.extend(Signal)
         
     for sampleName in sampleNames:
     

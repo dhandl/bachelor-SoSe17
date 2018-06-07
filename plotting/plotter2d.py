@@ -117,7 +117,7 @@ def main():
     
     #cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=100e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && ( (dphi_b_lep_max<2.5) || (dphi_b_lep_max>2.5 && ((ht>300e3) || (ht<200e3)) ) ) &&!((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))) )"
     
-    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((n_jet>=4) && (n_bjet>0) && (met>=250e3) && (mt>=90e3) && (n_lep==1)) )"
+    cut = "( " + lumi + " * weight * xs_weight * sf_total * weight_sherpa22_njets * ((met>=250e3) && (mt>=90e3) && (n_lep==1)) )"
         
     sampleNames = []
     
@@ -199,30 +199,29 @@ def main():
         allVariables.append(dphimetlep)
         allVariables.append(amt2)
         allVariables.append(mt)
-        #allVariables.append(Q)
-        #allVariables.append(njet)
-        #allVariables.append(nbjet)
-        #allVariables.append(jetpt)
+        allVariables.append(Q)
+        allVariables.append(njet)
+        allVariables.append(nbjet)
+        allVariables.append(jetpt)
         allVariables.append(ht)
         allVariables.append(dphi_jet0_ptmiss)
-        #allVariables.append(dphi_jet1_ptmiss)
-        #allVariables.append(amm)
-        #allVariables.append(leppt0)
+        allVariables.append(dphi_jet1_ptmiss)
+        allVariables.append(leppt0)
         allVariables.append(mbl)
-        #allVariables.append(lep_phi)
-        #allVariables.append(lep_eta)
-        #allVariables.append(R)
+        allVariables.append(lep_phi)
+        allVariables.append(lep_eta)
+        allVariables.append(R)
         allVariables.append(jetpt0)
-        #allVariables.append(jetpt1)
-        #allVariables.append(jetpt2)
-        #allVariables.append(jetpt3)
+        allVariables.append(jetpt1)
+        allVariables.append(jetpt2)
+        allVariables.append(jetpt3)
         allVariables.append(metsig)
         allVariables.append(htsig)
         allVariables.append(dphi_b_lep_max)
-        #allVariables.append(dphi_b_ptmiss_max)
+        allVariables.append(dphi_b_ptmiss_max)
         allVariables.append(metprojlep)
         allVariables.append(dRbjetlep)
-        #allVariables.append(bjetpt)
+        allVariables.append(bjetpt)
         allVariables.append(mTblMET)
         
         #names = ["am_{T2}", 'h_{T}', 'E_{T}^{miss}', 'N jets', 'N bjets', '#Delta#phi(l, E_{T}^{miss})', 'Q', '#Delta#phi(jet0, p_{T}^{miss})', '#Delta#phi(jet1, p_{T}^{miss})','m_{b,l}','m_{T}']
@@ -235,24 +234,24 @@ def main():
         print 'Using cut: ' + cut
         
         
-        print 'Plotting ' + str(countdiagrams) + ' diagrams...'
+        #print 'Plotting ' + str(countdiagrams) + ' diagrams...'
     
-        for i in range(0,len(allVariables)):
-            for j in range(0, len(allVariables)):
-                if (i>j):
-                    plot(allVariables[i]['varStr'],allVariables[j]['varStr'],sampleName,allVariables[j]['Xtitle'],allVariables[i]['Xtitle'],cut, fileName +'_'+allVariables[i]['fileName']+'vs'+allVariables[j]['fileName'],allVariables[i]['binning'],allVariables[j]['binning'])
-                    countdiagrams -= 1
-                    print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
+        #for i in range(0,len(allVariables)):
+            #for j in range(0, len(allVariables)):
+                #if (i>j):
+                    #plot(allVariables[i]['varStr'],allVariables[j]['varStr'],sampleName,allVariables[j]['Xtitle'],allVariables[i]['Xtitle'],cut, fileName +'_'+allVariables[i]['fileName']+'vs'+allVariables[j]['fileName'],allVariables[i]['binning'],allVariables[j]['binning'])
+                    #countdiagrams -= 1
+                    #print str(countdiagrams) +'/'+ str(nod) + ' diagrams remaining to plot...'
                     
                     
         #-------------Plot one variable to the rest of the list-----------
         
-        #variab=ht  #Variable to plot
+        variab=nbjet  #Variable to plot
         
-        #print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
-        #for var in allVariables:
-            #if var['name'] != variab['name']:
-                #plot(variab['varStr'],var['varStr'],sampleName,var['Xtitle'],variab['Xtitle'],cut, fileName +'_'+variab['fileName']+'vs'+var['fileName'],variab['binning'],var['binning'])
+        print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
+        for var in allVariables:
+            if var['name'] != variab['name']:
+                plot(variab['varStr'],var['varStr'],sampleName,var['Xtitle'],variab['Xtitle'],cut, fileName +'_'+variab['fileName']+'vs'+var['fileName'],variab['binning'],var['binning'])
                 
         filepath = './plots/2D/' + fileName + '_infofile.txt'
     

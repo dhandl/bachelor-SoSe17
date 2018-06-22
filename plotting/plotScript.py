@@ -278,11 +278,11 @@ def main():
     jetpt1 = {'name':'myjetpT1','fileName':fileName+'_jetpT1'+normString+logString, 'varStr':'jet_pt[1]*0.001', 'Xtitle':'p_{T}^{jet1} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     jetpt2 = {'name':'myjetpT2','fileName':fileName+'_jetpT2'+normString+logString, 'varStr':'jet_pt[2]*0.001', 'Xtitle':'p_{T}^{jet2} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     jetpt3 = {'name':'myjetpT3','fileName':fileName+'_jetpT3'+normString+logString, 'varStr':'jet_pt[3]*0.001', 'Xtitle':'p_{T}^{jet3} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
-    metsig = {'name':'myMET_sig', 'fileName':fileName+'_met_sig'+normString+logString, 'varStr':'met_sig', 'Xtitle':'E_{T}^{miss}-sig', 'Ytitle':'Events', 'binning':[30,0,50], 'binningIsExplicit':False}
-    htsig ={'name':'myhT_sig', 'fileName':fileName+'_hT_sig'+normString+logString, 'varStr':'ht_sig', 'Xtitle':'h_{T}-sig', 'Ytitle':'Events', 'binning':[30,0,50], 'binningIsExplicit':False}
+    metsig = {'name':'myMET_sig', 'fileName':fileName+'_met_sig'+normString+logString, 'varStr':'met_sig', 'Xtitle':'E_{T}^{miss, sig}', 'Ytitle':'Events', 'binning':[30,0,50], 'binningIsExplicit':False}
+    htsig ={'name':'myhT_sig', 'fileName':fileName+'_hT_sig'+normString+logString, 'varStr':'ht_sig', 'Xtitle':'h_{T}^{sig}', 'Ytitle':'Events', 'binning':[30,0,50], 'binningIsExplicit':False}
     dphi_b_lep_max = {'name':'mydPhi_blepmax', 'fileName':fileName+'_dphi_b_lep_max'+normString+logString, 'varStr':'dphi_b_lep_max', 'Xtitle':'max(#Delta#phi(b, l))', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
     dphi_b_ptmiss_max = {'name':'mydPhi_bptmissmax', 'fileName':fileName+'_dphi_b_ptmiss_max'+normString+logString, 'varStr':'dphi_b_ptmiss_max', 'Xtitle':'max(#Delta#phi(b, p_{T}^{miss}))', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
-    metprojlep = {'name':'myMETprojLEP', 'fileName':fileName+'_met_proj_lep'+normString+logString, 'varStr':'met_proj_lep*0.001', 'Xtitle':'E_{T}^{miss} on l [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], 'binningIsExplicit':False}
+    metprojlep = {'name':'myMETprojLEP', 'fileName':fileName+'_met_proj_lep'+normString+logString, 'varStr':'met_proj_lep*0.001', 'Xtitle':'E_{T,l}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], 'binningIsExplicit':False}
     dRbjetlep = {'name':'mydRbjetlep', 'fileName':fileName+'_dr_bjet_lep'+normString+logString, 'varStr':'dr_bjet_lep', 'Xtitle':'#DeltaR(b,l)', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
     bjetpt = {'name':'myBjetpT','fileName':fileName+'_bjet_pt'+normString+logString, 'varStr':'bjet_pt*0.001', 'Xtitle':'p_{T}^{bjet} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     bjetpt0 = {'name':'myBjetpT0','fileName':fileName+'_bjet_pt0'+normString+logString, 'varStr':'bjet_pt[0]*0.001', 'Xtitle':'p_{T}^{bjet0} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
@@ -291,45 +291,47 @@ def main():
     #mjet1jet2 = {'name':'myM_jet1_jet2T','fileName':fileName+'_m_jet1_jet2'+normString+logString, 'varStr':'m_jet1_jet2*0.001', 'Xtitle':'m_{jet1,jet2} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
 
 
-    #allVariables.append(met)
-    #allVariables.append(mt)
-    #allVariables.append(dphi_met_lep)
-    #allVariables.append(amt2)
+    allVariables.append(met)
+    allVariables.append(mt)
+    allVariables.append(dphi_met_lep)
+    allVariables.append(amt2)
     #allVariables.append(Q)
-    allVariables.append(njet)
-    allVariables.append(nbjet)
+    #allVariables.append(njet)
+    #allVariables.append(nbjet)
     #allVariables.append(jetpt)
-    #allVariables.append(ht)
-    #allVariables.append(dphi_jet0_ptmiss)
+    allVariables.append(ht)
+    allVariables.append(dphi_jet0_ptmiss)
     #allVariables.append(dphi_jet1_ptmiss)
     ##allVariables.append(amm)
     #allVariables.append(leppt0)
-    #allVariables.append(mbl)
+    allVariables.append(mbl)
     #allVariables.append(lep_phi)
     #allVariables.append(lep_eta)
     #allVariables.append(R)
-    #allVariables.append(jetpt0)
+    allVariables.append(jetpt0)
     #allVariables.append(jetpt1)
     #allVariables.append(jetpt2)
     #allVariables.append(jetpt3)
-    #allVariables.append(metsig)
-    #allVariables.append(htsig)
-    #allVariables.append(dphi_b_lep_max)
+    allVariables.append(metsig)
+    allVariables.append(htsig)
+    allVariables.append(dphi_b_lep_max)
     #allVariables.append(dphi_b_ptmiss_max)
-    #allVariables.append(metprojlep)
-    #allVariables.append(dRbjetlep)
+    allVariables.append(metprojlep)
+    allVariables.append(dRbjetlep)
     #allVariables.append(bjetpt)
-    #allVariables.append(mTblMET)
-    #allVariables.append(bjetpt0)
+    allVariables.append(mTblMET)
+    allVariables.append(bjetpt0)
     #allVariables.append(bjetpt1)
     ##allVariables.append(mjet1jet2) #Does not exist
-    allVariables.append(nlep)
+    #allVariables.append(nlep)
     
     #cut = '(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=200e3) && (mt>=90e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && ( (dphi_b_lep_max<2.5) || (dphi_b_lep_max>2.5 && ((ht>300e3) || (ht<200e3)) ) ) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
     
     #cut = '(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=100e3) && (mt>=90e3)'
     
-    cut = '(met>=250e3) && (mt>=90e3)'
+    #cut = '(met>=250e3) && (mt>=90e3)'
+    
+    cut = '(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (mt>=90e3) && (met>=100e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
 
     #cut = '(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (met>=100e3) && (mt>=0e3) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
     

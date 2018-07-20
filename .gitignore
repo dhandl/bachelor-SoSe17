@@ -1,3 +1,11 @@
+# Created by user
+
+plots/
+plots/*
+ML/plots/
+ML/plots/*
+ML/output/
+ML/output/*
 
 # Created by https://www.gitignore.io/api/root,python
 

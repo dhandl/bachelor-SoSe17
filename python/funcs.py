@@ -265,7 +265,7 @@ def lep_pt_over_jet2_pt(c):
     jetPt = c.GetLeaf('jet_pt').GetValue(1) *0.001
     return lepPt/jetPt
 
-def HT(c):
+def HT(c):                                                                         #eigen definiertes HT
     njet = c.GetLeaf('n_jet').GetValue()
     ht = 0.
     for i in range(int(njet)):
@@ -349,7 +349,7 @@ def L1(c):
         L1 = (wovermet-0.5)
     return L1
 
-def Ldphi(c):
+def Ldphi(c):                                                                                         #die DeltaPhi_Lepton Variable
     dphimetlep = c.GetLeaf('dphi_met_lep').GetValue()
     dphilepjet = c.GetLeaf('dphi_lep_jet1').GetValue()
     dphilepjet = pi - dphilepjet

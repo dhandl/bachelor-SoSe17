@@ -43,8 +43,8 @@ def setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loade
   sigCut = TCut(sigCut + " * (" + sample_info.Preselection + ")")
   bkgCut = TCut(bkgCut + " * (" + sample_info.Preselection + ")")
 
-  train_cut = TCut("(event_number % " + str(k) +  ") != " + str(i))
-  test_cut = TCut("(event_number % " + str(k) + ") == " + str(i))
+  train_cut = TCut("((event_number % " + str(k) +  ") != " + str(i) + ") && (" + sample_info.Preselection + ")")
+  test_cut = TCut("((event_number % " + str(k) + ") == " + str(i) + ") && (" + sample_info.Preselection + ")")
 
   for entry in sample_info.Signal:
     print "adding: ", entry.name

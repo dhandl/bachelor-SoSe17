@@ -6,88 +6,97 @@ import sys
 from array import array
 from math import *
 
-
-
-def dphi_jet12(c):
-    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
-    jet2Phi = c.GetLeaf('jet_phi').GetValue(1)
-    dphi = abs(jet1Phi - jet2Phi)
-    if dphi > pi:
-        dphi = 2*pi - dphi
-    return dphi
-
-def dphi_lep_jet1(c):                                               #Winkel zwischen Lepton und anzunehmendem ISR-jet sinnvoll?
-    lepPhi = c.GetLeaf('lep_phi').GetValue(0)
-    jet1Phi = c.GetLeaf('jet_phi').GetValue(0)
-    dphi = abs(lepPhi - jet1Phi)
-    if dphi > pi:
-        dphi = 2*pi - dphi
-    return dphi
-
-def met_over_squareroot_lepPt_softjetPt(c):                                     #Variationen der Met ueber Ht Variablen
-    met = c.GetLeaf('met').GetValue() *0.001
-    njet = c.GetLeaf('n_jet').GetValue()
-    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
-    ht = 0.
-    for i in range(1, int(njet)):
-        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
-        ht += jetpt 
-    ht += lepPt
-    return met/(sqrt(ht))
-
-def met_over_lepPt_softjetPt(c):                                     #Variationen der Met ueber Ht Variablen
-    met = c.GetLeaf('met').GetValue() *0.001
-    njet = c.GetLeaf('n_jet').GetValue()
-    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
-    ht = 0.
-    for i in range(1, int(njet)):
-        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
-        ht += jetpt 
-    ht += lepPt
-    return met/ht
-
-def CT1(c):                                                                       #CMS Variable, kombiniert HT und MET
-    met = c.GetLeaf('met').GetValue() *0.001
-    ht = c.GetLeaf('ht').GetValue() *0.001
-    CT1 = 0.
-    if met < (ht-100):
-        CT1 = met
-    if met > (ht-100):
-        CT1 = (ht -100)
-    return CT1
-    
-    
-def CT2(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
+#Hier Funktionen reinpasten
+def CT2_30(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
     met = c.GetLeaf('met').GetValue() *0.001
     jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
     CT2 = 0.
-    if met < (jet1Pt-25):
+    if met <= (jet1Pt-30):
         CT2 = met
-    if met > (jet1Pt-25):
-        CT2 = (jet1Pt -25)
+    if met > (jet1Pt-30):
+        CT2 = (jet1Pt -30)
     return CT2
 
-def squareroot_lepPt_softjetPt_over_met(c):                                     #Andersherum?
+def CT2_40(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
     met = c.GetLeaf('met').GetValue() *0.001
-    njet = c.GetLeaf('n_jet').GetValue()
-    lepPt = c.GetLeaf('lep_pt').GetValue(0) *0.001
-    ht = 0.
-    for i in range(1, int(njet)):
-        jetpt = c.GetLeaf('jet_pt').GetValue(i) *0.001 
-        ht += jetpt 
-    ht += lepPt
-    return (sqrt(ht))/met
+    jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    CT2 = 0.
+    if met <= (jet1Pt-40):
+        CT2 = met
+    if met > (jet1Pt-40):
+        CT2 = (jet1Pt -40)
+    return CT2
+
+def CT2_50(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    CT2 = 0.
+    if met <= (jet1Pt-50):
+        CT2 = met
+    if met > (jet1Pt-50):
+        CT2 = (jet1Pt -50)
+    return CT2
+
+def CT2_60(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    CT2 = 0.
+    if met <= (jet1Pt-60):
+        CT2 = met
+    if met > (jet1Pt-60):
+        CT2 = (jet1Pt -60)
+    return CT2
+
+def CT2_70(c):                                                                        #CMS Variable, kombiniert ISR-Jet-Pt und MET
+    met = c.GetLeaf('met').GetValue() *0.001
+    jet1Pt = c.GetLeaf('jet_pt').GetValue(0) *0.001
+    CT2 = 0.
+    if met <= (jet1Pt-70):
+        CT2 = met
+    if met > (jet1Pt-70):
+        CT2 = (jet1Pt -70)
+    return CT2
+
+
 
 
 NEW_VAR = [
-           {"name":"met_over_sqrt_lepPt_softjetPt", "array":array("f", [0]), "dataType":"F", "varFunc":met_over_squareroot_lepPt_softjetPt},
-           {"name":"CT1", "array":array("f", [0]), "dataType":"F", "varFunc":CT1}, 
-           {"name":"CT2", "array":array("f", [0]), "dataType":"F", "varFunc":CT2},
-           {"name":"squareroot_lepPt_softjetPt_over_met", "array":array("f", [0]), "dataType":"F", "varFunc":squareroot_lepPt_softjetPt_over_met},
-           {"name":"met_over_lepPt_softjetPt", "array":array("f", [0]), "dataType":"F", "varFunc":met_over_lepPt_softjetPt}, 
-           {"name":"dphi_lep_jet1", "array":array("f", [0]), "dataType":"F", "varFunc":dphi_lep_jet1}, 
-           {"name":"dphi_jet12", "array":array("f", [0]), "dataType":"F", "varFunc":dphi_jet12},
-         #  {"name":"myNeufVariable", "array":array("f", [0]), "dataType":"F", "varFunc":calcMyVar},
+           ###Generation 1### 
+           #{"name":"met_over_sqrt_lepPt_softjetPt", "array":array("f", [0]), "dataType":"F", "varFunc":met_over_squareroot_lepPt_softjetPt},
+           #{"name":"CT1", "array":array("f", [0]), "dataType":"F", "varFunc":CT1}, 
+           #{"name":"CT2", "array":array("f", [0]), "dataType":"F", "varFunc":CT2},
+           #{"name":"squareroot_lepPt_softjetPt_over_met", "array":array("f", [0]), "dataType":"F", "varFunc":squareroot_lepPt_softjetPt_over_met},
+           #{"name":"met_over_lepPt_softjetPt", "array":array("f", [0]), "dataType":"F", "varFunc":met_over_lepPt_softjetPt}, 
+           #{"name":"dphi_lep_jet1", "array":array("f", [0]), "dataType":"F", "varFunc":dphi_lep_jet1}, 
+           #{"name":"dphi_jet12", "array":array("f", [0]), "dataType":"F", "varFunc":dphi_jet12},
+           ###Generation 2###
+           #{"name":"lepJet1_energy_ratio", "array":array("f", [0]), "dataType":"F", "varFunc":lep_jet1_energy_ratio},
+           #{"name":"mt_over_dphiMetLep", "array":array("f", [0]), "dataType":"F", "varFunc":mt_over_dphiMetLep},
+           #{"name":"sqrtLepPt_over_met", "array":array("f", [0]), "dataType":"F", "varFunc":sqrt_lepPt_over_met},
+           ###Generation 3###
+           #{"name":"CT1_alt", "array":array("f", [0]), "dataType":"F", "varFunc":CT1_alt},
+           #{"name":"wPt_over_met", "array":array("f", [0]), "dataType":"F", "varFunc":wPt_over_met},
+           #{"name":"Lp", "array":array("f", [0]), "dataType":"F", "varFunc":Lp},
+           #{"name":"WEnergy1", "array":array("f", [0]), "dataType":"F", "varFunc":WEnergy1},
+           #{"name":"WRapidity1", "array":array("f", [0]), "dataType":"F", "varFunc":WRapidity1},
+           #{"name":"W_Lepton_angle_Wrestingframe1", "array":array("f", [0]), "dataType":"F", "varFunc":W_resting_Lepton_angle1},
+           #{"name":"WJet2_angle_jet1boost1", "array":array("f", [0]), "dataType":"F", "varFunc":WJet2_jet1boost_angle1},
+           #{"name":"W_Nu_angle_Wrestingframe1", "array":array("f", [0]), "dataType":"F", "varFunc":W_Nu_resting_angle1},
+           ###Generation 4###
+           #{"name":"Cos_W_resting_Lepton_angle1", "array":array("f", [0]), "dataType":"F", "varFunc":Cos_W_resting_Lepton_angle1},
+           #{"name":"lepEta_abs", "array":array("f", [0]), "dataType":"F", "varFunc":lepEta_abs},
+           #{"name":"LP_abs", "array":array("f", [0]), "dataType":"F", "varFunc":LP_abs},
+           ###Generation 5###
+           #{"name":"HT", "array":array("f", [0]), "dataType":"F", "varFunc":HT},
+           ###Generation 6###
+           #{"name":"Ldphi", "array":array("f", [0]), "dataType":"F", "varFunc":Ldphi},
+           ###Generation 7###
+           {"name":"CT2_30", "array":array("f", [0]), "dataType":"F", "varFunc":CT2_30},
+           {"name":"CT2_40", "array":array("f", [0]), "dataType":"F", "varFunc":CT2_40},
+           {"name":"CT2_50", "array":array("f", [0]), "dataType":"F", "varFunc":CT2_50},
+           {"name":"CT2_60", "array":array("f", [0]), "dataType":"F", "varFunc":CT2_60},
+           {"name":"CT2_70", "array":array("f", [0]), "dataType":"F", "varFunc":CT2_70},
+           
 ]
 
 def filesize(num):

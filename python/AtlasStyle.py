@@ -1,5 +1,5 @@
-from ROOT import gROOT, TStyle
 import ROOT
+from ROOT import gROOT, TStyle
 
 def SetAtlasStyle ():
   print "\nApplying ATLAS style settings..."
@@ -98,8 +98,9 @@ def ATLASLumiLabel(x,y,lumi="78",color=1):
     l = TLatex()
     l.SetNDC();
     l.SetTextFont(42);
-    l.SetTextSize(0.045);
+    l.SetTextSize(0.04);
     l.SetTextColor(color);
     dely = 0.115*472*gPad.GetWh()/(506*gPad.GetWw());
     label="#sqrt{s}=13 TeV, #intL dt = " + lumi + " fb^{-1}"
     l.DrawLatex(x,y-dely,label);
+

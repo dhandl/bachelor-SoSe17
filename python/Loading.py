@@ -148,14 +148,16 @@ def get_mlp_dist(tree, hist_name, mva_name, cut, nbins, min, max, norm=False):
   hist = TH1F(hist_name, "", nbins, min, max)
 
   #FIXME what about weight_sherpa22_njets?
-  tree.Draw("%s>>%s" % (mva_name, hist_name), "(%s) * (mc_weight * sf_total * xs_weight * weight_sherpa22_njets)" % cut)
+  #tree.Draw("%s>>%s" % (mva_name, hist_name), "(%s) * (mc_weight * sf_total * xs_weight * weight_sherpa22_njets)" % cut)
+  tree.Draw("%s>>%s" % (mva_name, hist_name), "(%s) * (mc_weight)" % cut)
 
   if norm:
     hist.Scale(1. / hist.Integral())
 
   return hist
 
-def get_total_events(trees, cut, weights = "mc_weight * sf_total * xs_weight * weight_sherpa22_njets"):
+#def get_total_events(trees, cut, weights = "mc_weight * sf_total * xs_weight * weight_sherpa22_njets"):
+def get_total_events(trees, cut, weights = "mc_weight"):
   h = TH1F("hxs", "", 1, 0, 2)
 
   for t in trees:

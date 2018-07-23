@@ -42,24 +42,24 @@ analyses = [
       "SamplingImportance=0.75"
 		]
 	),
+  #Analysis(TMVA.Types.kBDT, "BDT",
+  #  [
+  #  '!H','!V',
+  #  'NTrees=850',
+  #  'MinNodeSize=2.5%',
+  #  'MaxDepth=3',
+  #  'BoostType=AdaBoost',
+  #  'AdaBoostBeta=0.5',
+  #  'UseBaggedBoost',
+  #  'BaggedSampleFraction=0.5',
+  #  'SeparationType=GiniIndex',
+  #  'nCuts=20'
+  #  ]
+  #),
   Analysis(TMVA.Types.kBDT, "BDT",
     [
-    '!H','!V',
-    'NTrees=850',
-    'MinNodeSize=2.5%',
-    'MaxDepth=3',
-    'BoostType=AdaBoost',
-    'AdaBoostBeta=0.5',
-    'UseBaggedBoost',
-    'BaggedSampleFraction=0.5',
-    'SeparationType=GiniIndex',
-    'nCuts=20'
-    ]
-  ),
-  Analysis(TMVA.Types.kBDT, "BDTG",
-    [
     "H","!V",
-    "NTrees=1000",
+    "NTrees=500",
     "MinNodeSize=2.5%",
     "BoostType=Grad",
     "Shrinkage=0.1",

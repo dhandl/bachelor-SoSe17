@@ -215,7 +215,8 @@ def get_corr_hist(tree, mva_name, variable, cut, type, mva_binning):
 	hist_name = variable + "_hist_" + type
 	draw_cmd = "%s>>%s%s" % (draw_var, hist_name, binning)
 
-	tree.Draw(draw_cmd, "%s * (mc_weight * sf_total * xs_weight)" % cut)
+	#tree.Draw(draw_cmd, "%s * (mc_weight * sf_total * xs_weight)" % cut)
+	tree.Draw(draw_cmd, "%s * (mc_weight)" % cut)
 	hist = gDirectory.Get(hist_name)
 	hist.SetDirectory(gROOT)
 

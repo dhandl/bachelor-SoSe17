@@ -25,7 +25,8 @@ def evaluate_mva(name, tree, mva_name, reader, var_store, nbins, nmin, nmax, ran
 
 		mlp = eval_event(tree, reader, var_store, mva_name, random_var, random_var_hist)
 
-		hist.Fill(mlp, tree.weight * tree.sf_total * tree.xs_weight)
+		#hist.Fill(mlp, tree.weight * tree.sf_total * tree.xs_weight)
+		hist.Fill(mlp, tree.event_weight)
 
 	return hist
 
@@ -36,7 +37,8 @@ def evaluate_mva_cut(name, tree, mva_name, reader, var_store, cut, lumi):
 		mlp = eval_event(tree, reader, var_store, mva_name)
 
 		if mlp >= cut:
-			hist.Fill(1, tree.weight * tree.sf_total * tree.xs_weight * lumi * 1000)
+			#hist.Fill(1, tree.weight * tree.sf_total * tree.xs_weight * lumi * 1000)
+			hist.Fill(1, tree.event_weight)
 
 	return hist.GetBinContent(1), hist.GetBinError(1)
 
@@ -52,7 +54,8 @@ def evaluate_mva_k_fold(name, tree, mva_name, reader_list, var_store_list, nbins
 			mlp += eval_event(tree, reader_list[iteration], var_store_list[iteration], mva_name)
 		mlp /= (1.0 * k_fold)
 
-		hist.Fill(mlp, tree.weight * tree.sf_total * tree.xs_weight)
+		#hist.Fill(mlp, tree.weight * tree.sf_total * tree.xs_weight)
+		hist.Fill(mlp, tree.event_weight)
 
 	return hist
 
@@ -75,7 +78,9 @@ def evaluate_mva_k_fold_test_train(name, tree, mva_name, reader_list, var_store_
 
 		mlp_train /= (1.0 * (k_fold-1.0))
 
-		test.Fill(mlp_test, tree.weight * tree.sf_total * tree.xs_weight)
-		train.Fill(mlp_train, tree.weight * tree.sf_total * tree.xs_weight)
+		#test.Fill(mlp_test, tree.weight * tree.sf_total * tree.xs_weight)
+		#train.Fill(mlp_train, tree.weight * tree.sf_total * tree.xs_weight)
+		test.Fill(mlp_test, tree.event_weight)
+		train.Fill(mlp_train, tree.event_weight)
 
 	return test, train

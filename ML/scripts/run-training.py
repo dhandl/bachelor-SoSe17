@@ -44,8 +44,8 @@ def setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loade
   sigCut = TCut(sigCut + " * (" + sample_info.Preselection + ")")
   bkgCut = TCut(bkgCut + " * (" + sample_info.Preselection + ")")
 
-  train_cut = TCut("( (event_number % " + str(k) +  ") != " + str(i) + ") && (" + sample_info.Preselection + ")" )
-  test_cut  = TCut("( (event_number % " + str(k) + ") == " + str(i) + ") && (" + sample_info.Preselection + ")" ) 
+  train_cut = TCut("( (event_number % " + str(k) +  ") != " + str(i) + ") && (" + sample_info.Preselection + ") && (!TMath::IsNaN(ht)) && (!TMath::IsNaN(met_sig))" )
+  test_cut  = TCut("( (event_number % " + str(k) + ") == " + str(i) + ") && (" + sample_info.Preselection + ") && (!TMath::IsNaN(ht)) && (!TMath::IsNaN(met_sig))" ) 
 
   for entry in sample_info.Signal:
     print "adding: ", entry.name
@@ -125,7 +125,7 @@ def main():
   # prepare TMVA and run training
   factory, outfile, loader = create_factory(opts.output, opts.name, opts.directory, opts.batch)
   set_variables(variables, loader)
-
+  print opts
   setup_training(mva_type, mva_name, mva_settings, sample_info, factory, loader, opts.k, opts.i)
   train(factory)
 

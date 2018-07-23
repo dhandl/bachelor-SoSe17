@@ -33,6 +33,7 @@ def get_mva(name, extra_opts=[], rm_opts=[]):
       opts = remove_opts(opts, extra_opts)
       opts += extra_opts
       opts = remove_opts(opts, rm_opts)
+      print Analysis(mva_type, mva_name, ":".join(opts))
       return Analysis(mva_type, mva_name, ":".join(opts))
 
   raise Exception("No such analysis '{}'".format(mva_name))

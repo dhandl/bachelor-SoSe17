@@ -57,8 +57,10 @@ def plot_mva_distribution(sig_hist, bkg_hist, input_name, mva_name, prefix, out_
   bkg_lumi = bkg_hist.Clone()
   sig_lumi = sig_hist.Clone()
 
-  bkg_lumi.Scale(lumi*1000)
-  sig_lumi.Scale(lumi*1000)
+  #bkg_lumi.Scale(lumi*1000)
+  #sig_lumi.Scale(lumi*1000)
+  bkg_lumi.Scale(lumi)
+  sig_lumi.Scale(lumi)
 
   # plot not normalized
   canv = TCanvas("mlp_distribution", "", 800, 600)
@@ -70,6 +72,7 @@ def plot_mva_distribution(sig_hist, bkg_hist, input_name, mva_name, prefix, out_
   leg = TLegend(0.5, 0.8, 0.8, 0.9)
   leg.AddEntry(sig_lumi, "Signal", "f")
   leg.AddEntry(bkg_lumi, "Background", "f")
+  canv.SetLogy()
   leg.Draw("same")
 
   save_canv(canv, prefix + input_name + out_name, out_dir + "_" + mva_name + out_name)
@@ -233,7 +236,7 @@ def main():
     print "Loading background {}".format(add_bkg.name)
     _t.Add(add_bkg.tree)
   bkg_tree = _t.CopyTree(sample_info.Preselection)
-
+  
   _t = TChain()
   for add_sig in sample_info.Signal:
     print "Loading signal {}".format(add_sig.name)
@@ -246,7 +249,8 @@ def main():
   random_var_hist = None
   rnd_var_index = None
   if opts.random_var:
-    bkg_tree.Draw("%s>>random_var_hist" % opts.random_var, "weight * sf_total * xs_weight")
+    #bkg_tree.Draw("%s>>random_var_hist" % opts.random_var, "weight * sf_total * xs_weight")
+    bkg_tree.Draw("%s>>random_var_hist" % opts.random_var, "event_weight")
     random_var_hist = gDirectory.Get("random_var_hist")
     remove_negative_entries(random_var_hist)
     random_var_hist.SetDirectory(None)
@@ -259,8 +263,10 @@ def main():
 
   plot_mva_distribution(sig_mva, bkg_mva, "_".join(opts.name.split("_")[:-1]), opts.name.split("_")[-1], opts.prefix, out_name, opts.lumi)
 
-  total_sig = get_total_events([sig_tree], "1", weights="weight * sf_total * xs_weight")
-  total_bkg = get_total_events([bkg_tree], "1", weights="weight * sf_total * xs_weight")
+  #total_sig = get_total_events([sig_tree], "1", weights="weight * sf_total * xs_weight")
+  #total_bkg = get_total_events([bkg_tree], "1", weights="weight * sf_total * xs_weight")
+  total_sig = get_total_events([sig_tree], "1", weights="event_weight")
+  total_bkg = get_total_events([bkg_tree], "1", weights="event_weight")
   print "total_sig", total_sig
   print "total_bkg", total_bkg
 

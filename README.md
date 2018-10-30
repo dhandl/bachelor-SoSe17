@@ -20,4 +20,3 @@ Additional information:
 - IML Machine Learning Workshop: https://indico.cern.ch/event/595059/timetable/#20170320
 - Material from the 2nd ML summer school: https://github.com/yandexdataschool/mlhep2016
 - Deep Learning with Keras: https://github.com/YaleATLAS/CERNDeepLearningTutorial
-

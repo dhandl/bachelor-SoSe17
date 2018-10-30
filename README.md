@@ -1,2 +1,2 @@
-# bachelor-SoSe17
+# bachelorKit
 Getting started, basic scripts, useful documentation

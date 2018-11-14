@@ -26,6 +26,8 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
     h=ROOT.TH2F("h","h",xbins,xstart,xstop,ybins,ystart,ystop)
     treeName.Draw(var2+':'+var1+'>>h',cut,"goff") #Erst y, dann x
 
+    profile = h.ProfileX()
+
     c0 = ROOT.TCanvas("c0","c0",600,500)
     c0.SetFillColor(10)
     c0.SetBorderSize(1)
@@ -34,12 +36,12 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
     #c0.SetGridy()
     #c0.SetGridx()
 
-    h.Draw("colz")
-    h.GetYaxis().SetTitle(ytitle)
+    profile.Draw("C")
+    #h.GetYaxis().SetTitle(ytitle)
     #h.GetYaxis().SetTitle("#Delta#Phi(E_{T}^{miss},l)")
-    h.GetXaxis().SetTitle(xtitle)
+    #h.GetXaxis().SetTitle(xtitle)
 
-    corr = h.GetCorrelationFactor()
+    #corr = h.GetCorrelationFactor()
 
     ATLASLabel(0.18,0.9,"Work in progress")
     ATLASLumiLabel(0.18,0.89,"140.0")
@@ -48,7 +50,7 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
     text.SetNDC()
     text.SetTextSize(0.045)
     text.SetTextAlign(11) 
-    text.DrawLatex(0.1,0.04,"r = %.3f"%corr)
+    #text.DrawLatex(0.1,0.04,"r = %.3f"%corr)
     #text.DrawLatex(0.5,0.8,"m(#tilde{t},#tilde{#chi}_{1}^{0})_{3-body}=(%i,%i) GeV"%(sig[0],sig[1]))
     #ROOT.myText(0.15,0.335,1,"Data 16, RN 297041")
     #ROOT.myText(0.15,0.285,1,"#sqrt{s} = 13TeV")
@@ -60,7 +62,7 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
 
 def main():
 
-    wwwDir = "/project/etp5/dhandl/MachineLearning/plots/evaluateRNNTruthReo/CR/2D/"
+    wwwDir = "/project/etp5/dhandl/MachineLearning/plots/evaluateRNNTruthReo/Profiles/"
     if not os.path.exists(wwwDir):
         os.makedirs(wwwDir)
         print ('Creating Directory ', wwwDir)
@@ -79,15 +81,15 @@ def main():
     #cut = '(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (mt>=90e3) && (met>=100e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
     
         
-    cut = '(n_jet>=4) && (n_lep==1) && (lep_pt[0]>25e3) && (n_bjet>=1) && (mt>=110e3) && (met>=230e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (outputScore>=0.2) && (outputScore<0.5)'
+    cut = '(n_jet>=4) && (n_lep==1) && (lep_pt[0]>25e3) && (n_bjet>=1) && (mt>=110e3) && (met>=230e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
 
     sampleNames = [
             #{'name':'ttz', 'legendName':'t#bar{t}+Z', 'target':bkgDir+'mc16d_ttZ/*.root', 'color': ROOT.TColor.GetColor('#E67067'), 'chain_name':'mc16d_ttZ_Nom'}, 
             #{'name':'multiboson', 'legendName':'Multiboson', 'target':bkgDir+'mc16d_multiboson/*.root', 'color': ROOT.TColor.GetColor('#54C571'), 'chain_name':'mc16d_multiboson_Nom'}, 
-            {'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*.root', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
+            #{'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*.root', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
             {'name':'wjets', 'legendName':'W+jets', 'target':bkgDir+'mc16d_wjets/*.root', 'color': ROOT.TColor.GetColor('#FCDD5D'), 'chain_name':'mc16d_wjets_Nom'}, 
-            {'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
-            {'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
+            #{'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
+            #{'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
             #{'name':'ttbar1L1tau', 'legendName':'t#bar{t} 1L1#tau', 'target':bkgDir+'powheg_ttbar/*', 'color': ROOT.TColor.GetColor('#5E9AD6'), 'chain_name':'powheg_ttbar_Nom', 'addCut':'( tt_cat==2 || tt_cat == 5 ) '}, 
     ]
 
@@ -171,7 +173,7 @@ def main():
         #allVariables.append(dRbjetlep)
         #allVariables.append(bjetpt)
         #allVariables.append(mTblMET)
-        allVariables.append(mtopX2)
+        allVariables.append(output)
         
         countdiagrams = len(allVariables)*(len(allVariables)-1)/2
         nod = countdiagrams
@@ -181,7 +183,7 @@ def main():
         
         #-------------Plot one variable to the rest of the list-----------
         
-        variab=mt  #Variable to plot
+        variab=output  #Variable to plot
         
         print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
         for var in allVariables:

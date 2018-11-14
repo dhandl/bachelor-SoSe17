@@ -47,6 +47,58 @@ def doRatio(hist1,hist2,Xtitle='',Ytitle='1/Default'):
     h1.GetXaxis().SetLabelOffset(0.04)
     return h1
 
+def doFractions(hists, signal, Xtitle='', Ytitle='Fractions'):
+  if type(hists) == list:
+    hists.sort(key=lambda hist: hist.Integral())
+    ntot = []
+    for i in range(1, hists[0].GetNbinsX()+1):
+      total = 0.
+      for h in hists:
+        total = total + h.GetBinContent(i)
+      ntot.append(total)
+ 
+    hStack = ROOT.THStack('bgstack', 'Background contributions')
+    for hist in hists:
+      h = hist.Clone()
+      h.Reset()
+      for i in range(1, hist.GetNbinsX()+1):
+        try:
+          h.SetBinContent(i, hist.GetBinContent(i)/ntot[i-1])
+        except ZeroDivisionError:
+          pass
+      hStack.Add(h)
+
+    hStack.SetMinimum(0.0)
+    hStack.SetMaximum(1.0)
+    hStack.Draw('hist')
+    hStack.GetXaxis().SetTitle(Xtitle)
+    hStack.GetYaxis().SetTitle(Ytitle)
+    hStack.GetYaxis().SetNdivisions(505)
+    hStack.GetYaxis().SetTitleSize(23)
+    hStack.GetYaxis().SetTitleFont(43)
+    hStack.GetYaxis().SetTitleOffset(1.8)
+    hStack.GetYaxis().SetLabelFont(43)
+    hStack.GetYaxis().SetLabelSize(20)
+    hStack.GetYaxis().SetLabelOffset(0.015)
+    hStack.GetXaxis().SetNdivisions(510)
+    hStack.GetXaxis().SetTitleSize(23)
+    hStack.GetXaxis().SetTitleFont(43)
+    hStack.GetXaxis().SetTitleOffset(3.4)
+    hStack.GetXaxis().SetLabelFont(43)
+    hStack.GetXaxis().SetLabelSize(20)
+    hStack.GetXaxis().SetLabelOffset(0.04)
+
+    s = signal.Clone()
+    for i in range(1, s.GetNbinsX()+1):
+      try:
+        s.SetBinContent(i, s.GetBinContent(i)/(ntot[i-1]+s.GetBinContent(i)))
+      except ZeroDivisionError:
+        pass
+    #s.Draw('same')
+    return hStack, s 
+  else:
+    print 'Histograms must be passed as a list!'   
+    return 0
 
 def plot(var, fileName, cut, weight, allSignal, allBkg):
     """ Creates a plot """
@@ -56,7 +108,6 @@ def plot(var, fileName, cut, weight, allSignal, allBkg):
     allVariables=[]
     allVariables.append(var)
     
-
     # Creating dictionaries of different variables with defined keys (But why is it commented out?)
 
     #amt2 = {'name':'myAmt2', 'fileName':fileName+'_amt2'+normString+logString, 'varStr':'amt2', 'Xtitle':'am_{T2}', 'Ytitle':'Events', 'binning':[30,0,600], 'binningIsExplicit':False}
@@ -132,7 +183,7 @@ def plot(var, fileName, cut, weight, allSignal, allBkg):
     # Set Style for each variable 
     for var in allVariables:
         canv = ROOT.TCanvas(var['name']+'_Window',var['name']+'_Window',600,500)
-        if setRatioPlot:
+        if setRatioPlot or BgFractions:
             pad1 = ROOT.TPad('pad1','pad1',0.,0.3,1.,1.)
             pad1.SetBottomMargin(0.018)
         else:
@@ -223,7 +274,6 @@ def plot(var, fileName, cut, weight, allSignal, allBkg):
     canv.Print(wwwDir+var['fileName']+'.root')
     canv.Print(wwwDir+var['fileName']+'.png')
     canv.Close()
-    
 
 
 ### BEGIN OF ACTUAL SCRIPT    
@@ -262,19 +312,23 @@ if setLogY:
     logString = '_logScale'
 else:
     logString = ''
+#----------------------------#
+setRatioPlot = False 
+BgFractions = True
+#----------------------------#
 
 #--- Set Ratio Plot
 setRatioPlot = False
 
 #--- Chose background signal (and comment each background signal you don't want out)
 allBkg = [
-{'name':'ttv', 'legendName':'t#bar{t}+V', 'target':bkgDir+'mc16d_ttZ/*', 'color': ROOT.TColor.GetColor('#E67067'), 'chain_name':'mc16d_ttZ_Nom'}, 
-{'name':'diboson', 'legendName':'Multiboson', 'target':bkgDir+'mc16d_multiboson/*', 'color': ROOT.TColor.GetColor('#54C571'), 'chain_name':'mc16d_multiboson_Nom'}, 
-{'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
-{'name':'wjets', 'legendName':'W+jets', 'target':bkgDir+'mc16d_wjets/*', 'color': ROOT.TColor.GetColor('#FCDD5D'), 'chain_name':'mc16d_wjets_Nom'}, 
-{'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
+{'name':'ttz', 'legendName':'t#bar{t}+Z', 'target':bkgDir+'mc16d_ttZ/*.root', 'color': ROOT.TColor.GetColor('#E67067'), 'chain_name':'mc16d_ttZ_Nom'}, 
+{'name':'multiboson', 'legendName':'Multiboson', 'target':bkgDir+'mc16d_multiboson/*.root', 'color': ROOT.TColor.GetColor('#54C571'), 'chain_name':'mc16d_multiboson_Nom'}, 
+{'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*.root', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
+{'name':'wjets', 'legendName':'W+jets', 'target':bkgDir+'mc16d_wjets/*.root', 'color': ROOT.TColor.GetColor('#FCDD5D'), 'chain_name':'mc16d_wjets_Nom'}, 
+{'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
 {'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
-{'name':'ttbar1L1tau', 'legendName':'t#bar{t} 1L1#tau', 'target':bkgDir+'powheg_ttbar/*', 'color': ROOT.TColor.GetColor('#5E9AD6'), 'chain_name':'powheg_ttbar_Nom', 'addCut':'( tt_cat==2 || tt_cat == 5 ) '}, 
+#{'name':'ttbar1L1tau', 'legendName':'t#bar{t} 1L1#tau', 'target':bkgDir+'powheg_ttbar/*', 'color': ROOT.TColor.GetColor('#5E9AD6'), 'chain_name':'powheg_ttbar_Nom', 'addCut':'( tt_cat==2 || tt_cat == 5 ) '}, 
 ]
 
 #--- Chose signal (Only valid signal so far is the stop_bWN_450_300 signal! Using others will throw errors!)
@@ -319,8 +373,8 @@ def main():
     dphi_met_lep = {'name':'mydPhi', 'fileName':fileName+'_dphi_met_lep'+normString+logString, 'varStr':'dphi_met_lep', 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
     mt = {'name':'myMT','fileName':fileName+'_mt'+normString+logString, 'varStr':'mt*0.001', 'Xtitle':'m_{T} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     Q = {'name':'myQ','fileName':fileName+'_Q'+normString+logString, 'varStr':'1-mt*mt/(2*met*lep_pt[0])', 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], 'binningIsExplicit':False}
-    njet = {'name':'mynjet','fileName':fileName+'_njet'+normString+logString, 'varStr':'n_jet', 'Xtitle':'N jets', 'Ytitle':'Events', 'binning':[10,0,10], 'binningIsExplicit':False}
-    nbjet = {'name':'mynbjet','fileName':fileName+'_nbjet'+normString+logString, 'varStr':'n_bjet', 'Xtitle':'N bjets', 'Ytitle':'Events', 'binning':[10,0,10], 'binningIsExplicit':False}
+    njet = {'name':'mynjet','fileName':fileName+'_njet'+normString+logString, 'varStr':'n_jet', 'Xtitle':'jets', 'Ytitle':'Events', 'binning':[11,-0.5,10.5], 'binningIsExplicit':False}
+    nbjet = {'name':'mynbjet','fileName':fileName+'_nbjet'+normString+logString, 'varStr':'n_bjet', 'Xtitle':'b-jets', 'Ytitle':'Events', 'binning':[6,-0.5,5.5], 'binningIsExplicit':False}
     jetpt = {'name':'myjetpT','fileName':fileName+'_jetpT'+normString+logString, 'varStr':'jet_pt*0.001', 'Xtitle':'p_{T}^{jet} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     ht = {'name':'myht','fileName':fileName+'_hT'+normString+logString, 'varStr':'ht*0.001', 'Xtitle':'h_{T} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     dphi_jet0_ptmiss = {'name':'mydPhi_jet0ptmiss', 'fileName':fileName+'_dphi_jet0_ptmiss'+normString+logString, 'varStr':'dphi_jet0_ptmiss', 'Xtitle':'#Delta#phi(jet0, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
@@ -329,13 +383,13 @@ def main():
     leppt0 = {'name':'myleppt0','fileName':fileName+'_lep_pt0'+normString+logString, 'varStr':'lep_pt[0]*0.001', 'Xtitle':'p_{T}^{lep} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     mbl = {'name':'mymbl','fileName':fileName+'_m_bl'+normString+logString, 'varStr':'m_bl*0.001', 'Xtitle':'m_{b,l} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     nlep = {'name':'mynlep','fileName':fileName+'_nlep'+normString+logString, 'varStr':'n_lep', 'Xtitle':'N lep', 'Ytitle':'Events', 'binning':[10,0,10], 'binningIsExplicit':False}
-    lep_phi = {'name':'mylphi', 'fileName':fileName+'_lep_phi'+normString+logString, 'varStr':'lep_phi', 'Xtitle':'#phi(l)', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
-    lep_eta = {'name':'myleta', 'fileName':fileName+'_lep_eta'+normString+logString, 'varStr':'lep_eta', 'Xtitle':'#eta(l)', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
+    lep_phi = {'name':'mylphi', 'fileName':fileName+'_lep_phi'+normString+logString, 'varStr':'lep_phi', 'Xtitle':'#phi(l)', 'Ytitle':'Events', 'binning':[16,0,3.2], 'binningIsExplicit':False}
+    lep_eta = {'name':'myleta', 'fileName':fileName+'_lep_eta'+normString+logString, 'varStr':'lep_eta', 'Xtitle':'#eta(l)', 'Ytitle':'Events', 'binning':[32,-3.2,3.2], 'binningIsExplicit':False}
     R = {'name':'myR', 'fileName':fileName+'_R'+normString+logString, 'varStr':'lep_phi*lep_phi+lep_eta*lep_eta', 'Xtitle':'R', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
-    jetpt0 = {'name':'myjetpT0','fileName':fileName+'_jetpT0'+normString+logString, 'varStr':'jet_pt[0]*0.001', 'Xtitle':'p_{T}^{jet0} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
-    jetpt1 = {'name':'myjetpT1','fileName':fileName+'_jetpT1'+normString+logString, 'varStr':'jet_pt[1]*0.001', 'Xtitle':'p_{T}^{jet1} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
-    jetpt2 = {'name':'myjetpT2','fileName':fileName+'_jetpT2'+normString+logString, 'varStr':'jet_pt[2]*0.001', 'Xtitle':'p_{T}^{jet2} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
-    jetpt3 = {'name':'myjetpT3','fileName':fileName+'_jetpT3'+normString+logString, 'varStr':'jet_pt[3]*0.001', 'Xtitle':'p_{T}^{jet3} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
+    jetpt0 = {'name':'myjetpT0','fileName':fileName+'_jetpT0'+normString+logString, 'varStr':'jet_pt[0]*0.001', 'Xtitle':'p_{T}^{jet1} [GeV]', 'Ytitle':'Events', 'binning':[32,0,800], 'binningIsExplicit':False}
+    jetpt1 = {'name':'myjetpT1','fileName':fileName+'_jetpT1'+normString+logString, 'varStr':'jet_pt[1]*0.001', 'Xtitle':'p_{T}^{jet2} [GeV]', 'Ytitle':'Events', 'binning':[24,0,600], 'binningIsExplicit':False}
+    jetpt2 = {'name':'myjetpT2','fileName':fileName+'_jetpT2'+normString+logString, 'varStr':'jet_pt[2]*0.001', 'Xtitle':'p_{T}^{jet3} [GeV]', 'Ytitle':'Events', 'binning':[20,0,500], 'binningIsExplicit':False}
+    jetpt3 = {'name':'myjetpT3','fileName':fileName+'_jetpT3'+normString+logString, 'varStr':'jet_pt[3]*0.001', 'Xtitle':'p_{T}^{jet4} [GeV]', 'Ytitle':'Events', 'binning':[16,0,400], 'binningIsExplicit':False}
     metsig = {'name':'myMET_sig', 'fileName':fileName+'_met_sig'+normString+logString, 'varStr':'met_sig', 'Xtitle':'E_{T}^{miss, sig}', 'Ytitle':'Events', 'binning':[30,0,50], 'binningIsExplicit':False}
     htsig ={'name':'myhT_sig', 'fileName':fileName+'_hT_sig'+normString+logString, 'varStr':'ht_sig', 'Xtitle':'h_{T}^{sig}', 'Ytitle':'Events', 'binning':[30,0,50], 'binningIsExplicit':False}
     dphi_b_lep_max = {'name':'mydPhi_blepmax', 'fileName':fileName+'_dphi_b_lep_max'+normString+logString, 'varStr':'dphi_b_lep_max', 'Xtitle':'max(#Delta#phi(b, l))', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
@@ -347,7 +401,6 @@ def main():
     bjetpt1 = {'name':'myBjetpT1','fileName':fileName+'_bjet_pt1'+normString+logString, 'varStr':'bjet_pt[1]*0.001', 'Xtitle':'p_{T}^{bjet1} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
     mTblMET = {'name':'myMtblMet','fileName':fileName+'_mT_blMET'+normString+logString, 'varStr':'mT_blMET*0.001', 'Xtitle':'m_{T}^{blMET} [GeV]', 'Ytitle':'Events', 'binning':[50,100,700], 'binningIsExplicit':False}
     mjet1jet2 = {'name':'myM_jet1_jet2T','fileName':fileName+'_m_jet1_jet2'+normString+logString, 'varStr':'m_jet1_jet2*0.001', 'Xtitle':'m_{jet1,jet2} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
-
 
 #--- Chose which variables to plot by appending only wished variables and commenting everything out
 
@@ -384,6 +437,7 @@ def main():
     #allVariables.append(bjetpt1)
     ##allVariables.append(mjet1jet2) #Does not exist
     #allVariables.append(nlep)
+    #allVariables.append(output)
     
 
 #--- Set cuts

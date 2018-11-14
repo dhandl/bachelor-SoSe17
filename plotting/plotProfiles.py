@@ -36,7 +36,7 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
     #c0.SetGridy()
     #c0.SetGridx()
 
-    profile.Draw("eh1")
+    profile.Draw("C")
     #h.GetYaxis().SetTitle(ytitle)
     #h.GetYaxis().SetTitle("#Delta#Phi(E_{T}^{miss},l)")
     #h.GetXaxis().SetTitle(xtitle)
@@ -86,10 +86,10 @@ def main():
     sampleNames = [
             #{'name':'ttz', 'legendName':'t#bar{t}+Z', 'target':bkgDir+'mc16d_ttZ/*.root', 'color': ROOT.TColor.GetColor('#E67067'), 'chain_name':'mc16d_ttZ_Nom'}, 
             #{'name':'multiboson', 'legendName':'Multiboson', 'target':bkgDir+'mc16d_multiboson/*.root', 'color': ROOT.TColor.GetColor('#54C571'), 'chain_name':'mc16d_multiboson_Nom'}, 
-            {'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*.root', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
+            #{'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*.root', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
             {'name':'wjets', 'legendName':'W+jets', 'target':bkgDir+'mc16d_wjets/*.root', 'color': ROOT.TColor.GetColor('#FCDD5D'), 'chain_name':'mc16d_wjets_Nom'}, 
-            {'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
-            {'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
+            #{'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
+            #{'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
             #{'name':'ttbar1L1tau', 'legendName':'t#bar{t} 1L1#tau', 'target':bkgDir+'powheg_ttbar/*', 'color': ROOT.TColor.GetColor('#5E9AD6'), 'chain_name':'powheg_ttbar_Nom', 'addCut':'( tt_cat==2 || tt_cat == 5 ) '}, 
     ]
 
@@ -193,10 +193,10 @@ def main():
    
     filepath = wwwDir + fileName + '_infofile.txt'
          
-    #print 'Saving infofile to' + filepath
-    #infofile = open(filepath, 'w')
-    #infofile.write('Applied cuts: ' + cut)
-    #infofile.close()
+    print 'Saving infofile to' + filepath
+    infofile = open(filepath, 'w')
+    infofile.write('Applied cuts: ' + cut)
+    infofile.close()
         
 if __name__ == "__main__":
     main()

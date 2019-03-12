@@ -1,3 +1,4 @@
+import os
 from ROOT import *
 
 gROOT.SetBatch(True)
@@ -5,10 +6,14 @@ gROOT.SetBatch(True)
 # this style is initialized below
 Style = TStyle("SWup","Modified ATLAS style")
 
-TitleEvents = "events"
-TitleNorm = "event fraction"
+TitleEvents = "Events"
+TitleNorm = "Event fraction"
 
-YMaxFactorLin = 1.2
+TotalSM = "Total SM"
+DataMCRatio = "Data / SM"
+
+
+YMaxFactorLin = 1.3
 YMaxFactorLog = 10
 
 ChannelString = {
@@ -18,9 +23,12 @@ ChannelString = {
 
 LineSpacing = 0.05
 
-FirstLine = 0.89
+FirstLine = 0.87
 SecondLine = FirstLine - LineSpacing
 ThirdLine = SecondLine - LineSpacing
+FourthLine = ThirdLine - LineSpacing
+FifthLine = FourthLine - LineSpacing
+SixthLine = FifthLine - LineSpacing
 
 Colors = [
 	kBlack,
@@ -51,17 +59,23 @@ Left = 0.18
 
 OBJECTS = []
 
-def legend(leg):
-	leg.SetBorderSize(0)
-	leg.SetFillColor(kWhite)
+def legend(leg, font_size=0.05):
+	leg.SetFillStyle(0)
+	leg.SetFillColorAlpha(0, 0.01)
+	leg.SetLineColorAlpha(0, 0.01)
+	leg.SetBorderSize(1)
+	leg.SetTextFont(42)
+	leg.SetTextSize(font_size)
 
 def single_hist(hist):
 	hist.SetLineColor(kBlack)
 	hist.SetLineWidth(3)
 	hist.SetFillColor(kGray)
 
-def comp_hist(hist):
+def comp_hist(hist, color=None):
 	hist.SetLineWidth(3)
+	if color is not None:
+		hist.SetLineColor(color)
 
 def stack_hist(hist, color):
 	hist.SetLineColor(kBlack)
@@ -71,7 +85,7 @@ def stack_hist(hist, color):
 def overlay_hist(hist, color):
 	hist.SetLineColor(color)
 	hist.SetLineWidth(3)
-	hist.SetLineStyle(kDashed)
+	hist.SetLineStyle(9)
 
 def data_hist(hist):
 	hist.SetMarkerStyle(20)
@@ -89,8 +103,8 @@ def mc_total_hist(hist):
 
 def ratio_ref(hist, stat_only=True):
 	hist.SetMarkerSize(0)
-	hist.SetFillColor(stat_only and kGray+1 or TColor.GetColor("#A4B89E"))
-	hist.SetFillStyle(1001)
+	hist.SetFillColor(kBlack)
+	hist.SetFillStyle(3004)
 
 def profile(prof):
 	prof.SetMarkerStyle(21)
@@ -111,10 +125,26 @@ def ratio_line_total(line):
 	line.SetLineWidth(3)
 
 def marker_line(line):
-	line.SetLineColor(kBlack)
+	line.SetLineColor(kBlue)
 	line.SetLineWidth(3)
 
-def atlas(text, x=0.18, y=0.89, text_offset=0.13, rel=.8):
+def color_line(line, color, width=3):
+	line.SetLineColor(color)
+	line.SetLineWidth(3)
+
+def get_color(index, total):
+	if index < len(Colors):
+		return Colors[index]
+	return kBlack
+
+	gStyle.SetPalette(kRainBow)
+	if total == 1:
+		return kBlack
+	n_colors = gStyle.GetNumberOfColors()
+	return gStyle.GetColorPalette(index * ((n_colors - 1) / (total-1)))
+
+
+def atlas(text, x=0.19, y=FirstLine, text_offset=0.13, rel=.8):
 	atl_str = TLatex(x, y, "ATLAS")
 	atl_str.SetNDC()
 	atl_str.SetName("atlas_str")
@@ -133,7 +163,7 @@ def atlas(text, x=0.18, y=0.89, text_offset=0.13, rel=.8):
 		OBJECTS.append(add_str)
 		add_str.Draw("same")
 
-def simulation(x=0.18, y=0.84):
+def simulation(x=0.19, y=SecondLine):
 	sim_str = TLatex(x, y, "simulation")
 	sim_str.SetNDC()
 	sim_str.SetName("sim_str")
@@ -155,7 +185,7 @@ def _get_nice_lumi_unit(lumi_fb):
 	return lumi_nb, "nb"
 
 
-def sqrts_lumi(sqrts, lumi_fb, x=0.36, y=0.84, rel=.8):
+def sqrts_lumi(sqrts, lumi_fb, x=0.36, y=SecondLine, rel=.8):
 	lumi_val, lumi_unit = _get_nice_lumi_unit(lumi_fb)
 
 	sl_str = TLatex(x, y, "#sqrt{s} = %d TeV, %.1f %s^{-1}" % (sqrts, lumi_val, lumi_unit))
@@ -167,7 +197,7 @@ def sqrts_lumi(sqrts, lumi_fb, x=0.36, y=0.84, rel=.8):
 	global OBJECTS
 	OBJECTS.append(sl_str)
 
-def sqrts(sqrts, x=0.18, y=0.84, rel=.8):
+def sqrts(sqrts, x=0.19, y=SecondLine, rel=.8):
 	sl_str = TLatex(x, y, "#sqrt{s} = %d TeV" % (sqrts))
 	sl_str.SetNDC()
 	sl_str.SetName("sl_str")
@@ -193,7 +223,6 @@ def string(x, y, text, rel=0.8, font=None):
 def canv_2d(canv, hist=None):
 	canv.SetLeftMargin(0.15)
 	canv.SetRightMargin(0.15)
-	canv.SetBottomMargin(0.18)
 
 	if hist:
 		hist.GetYaxis().SetTitleOffset(1.1)
@@ -329,7 +358,7 @@ def _init_style():
 	Style.SetTitleXOffset(1.2)
 	Style.SetTitleYOffset(1.3)
 
-	Style.SetPalette(kLightTemperature)
+	Style.SetPalette(51)
 
 	TGaxis.SetMaxDigits(4)
 
@@ -337,3 +366,13 @@ def _init_style():
 	gROOT.ForceStyle()
 
 _init_style()
+
+if os.getenv("SWUP_VLQ_MODE"):
+	TotalSM = "Total pred."
+	DataMCRatio = "Data / pred."
+
+
+	def ratio_ref(hist, stat_only=True):
+		hist.SetMarkerSize(0)
+		hist.SetFillColor(stat_only and kGray+1 or TColor.GetColor("#A4B89E"))
+		hist.SetFillStyle(1001)

@@ -17,6 +17,31 @@ SetAtlasStyle()
 ROOT.gStyle.SetOptTitle(0)
 ROOT.gStyle.SetOptStat(0)
 
+import PlotStyle as PS
+ROOT.gStyle.SetPalette(57)
+from collections import namedtuple
+
+Axis = namedtuple("Axis", "title xlow xup ylow yup")
+Diag = namedtuple("Diag", "start end text tx ty")
+
+AxisDef = {
+  'bWN': Axis(";m_{ #tilde{t}_{1}} [GeV];m_{#tilde{#chi}_{1}^{0}} [GeV];",  180, 760, 0., 660),
+}
+
+Diag = {
+  #'bWN': Diag((AxisDef['bWN'].xlow, AxisDef['bWN'].xlow-7), (330.,320.), "m_{#tilde{#chi}^{0}_{1}} > m_{#tilde{t}^{}_{1}}", 53),
+  'bWN': [
+    Diag((AxisDef['bWN'].xlow + 7.5, AxisDef['bWN'].xlow + 7.5 - 172.5), (AxisDef['bWN'].yup - 100 + 172.5, AxisDef['bWN'].yup - 100), "m_{ #tilde{t}_{1}} - m_{#tilde{#chi}_{1}^{0}} < m_{t}", 650, 500), 
+    Diag((AxisDef['bWN'].xlow, AxisDef['bWN'].xlow - 85), (AxisDef['bWN'].yup - 100 + 85, AxisDef['bWN'].yup - 100), "m_{ #tilde{t}_{1}} - m_{#tilde{#chi}_{1}^{0}} < m_{W} + m_{b}", 550, 500),
+    Diag((AxisDef['bWN'].xlow, AxisDef['bWN'].xlow), (AxisDef['bWN'].yup - 100, AxisDef['bWN'].yup - 100), "m_{ #tilde{t}_{1}} - m_{#tilde{#chi}_{1}^{0}} < 0", 470, 500),
+  ],
+
+}
+
+ModelLabel = {
+  'bWN': "#tilde{t}_{1}#tilde{t}_{1} production, #tilde{t}_{1}#rightarrow bW#tilde{#chi}^{0}_{1}"
+}
+
 def SetBorders( hist, val=0 ):
     "Copied from histfitter scripts - sets border values for 2d hist"
     numx = hist.GetNbinsX()
@@ -309,6 +334,64 @@ def getSignalPoints(regex, *paths):
 def getRandomHistName():
     return "hist_{}".format(random.randrange(0, 1e6))
 
+def get_diag_text_angle(x0, y0, x1, y1, canv, axis):
+  dx = x1 - x0
+  dy = y1 - y0
+
+  canv_width = (axis.xup - axis.xlow) / ((1 - canv.GetLeftMargin() - canv.GetRightMargin()) * canv.GetWindowWidth())
+  canv_height = (axis.yup - axis.ylow) / ((1 - canv.GetTopMargin() - canv.GetBottomMargin()) * canv.GetWindowHeight())
+
+  dx /= canv_width
+  dy /= canv_height
+
+  phi = math.atan2(dy, dx) * 180 / math.pi
+
+  return phi
+
+def draw_deco(canv):
+  axis = AxisDef['bWN']
+
+  diag_lines = []
+  diag_texts = []
+  if 'bWN' in Diag:
+    diags = Diag['bWN']
+
+    if type(diags) != list:
+      diags = [diags]
+
+    for diag in diags:
+      diag_line = ROOT.TLine(diag.start[0], diag.start[1], diag.end[0], diag.end[1])
+      diag_line.SetLineColor(ROOT.kGray+1)
+      diag_line.SetLineStyle(ROOT.kDashed)
+      diag_line.SetLineWidth(2)
+
+      dtx = diag.tx
+      dty = diag.ty
+
+      if dtx < 0:
+        dtx = diag.start[0] + 0.05 * (axis.xup - axis.xlow)
+        dty = diag.start[1] + (0.1) * (axis.yup - axis.ylow)+30   #diag_text = TLatex(dtx+200, dty+230, diag.text)
+      diag_text = ROOT.TLatex(dtx, dty, diag.text)
+      diag_text.SetTextFont(42)
+      diag_text.SetTextColor(ROOT.kGray+1)
+      diag_text.SetTextSize(0.03)
+      diag_text.SetTextAngle(get_diag_text_angle(diag.start[0], diag.start[1], diag.end[0], diag.end[1], canv, axis))
+
+      diag_line.Draw("same")
+      diag_text.Draw("same")
+
+      diag_lines.append(diag_line)
+      diag_texts.append(diag_text)
+
+  model_text = ROOT.TLatex(.16, .955, ModelLabel['bWN'])
+  model_text.SetNDC()
+  model_text.SetTextFont(42)
+  model_text.SetTextSize(0.038)
+  model_text.SetTextColor(ROOT.kBlack)
+
+  model_text.Draw("same")
+
+  return [diag_lines, diag_texts, model_text]
 
 
 if __name__ == "__main__":
@@ -316,71 +399,145 @@ if __name__ == "__main__":
     ROOT.gROOT.SetBatch()
 
     exampleHarvest = [
+        ### bWN ###
+        {'clsu1s': 0.0006145129, 'yield': 0, 'mT': 400, 'clsd1s': 4.046865e-07, 'CLsexp': 1.859726e-05, 'var': 0, 'type': 'bWN', 'mX': 235, 'CLs': 1.269571e-05},
+        {'clsu1s': 2.831536e-06, 'yield': 0, 'mT': 400, 'clsd1s': 1.534384e-10, 'CLsexp': 2.476796e-08, 'var': 0, 'type': 'bWN', 'mX': 250, 'CLs': 1.570699e-08}, 
+        {'clsu1s': 6.012287e-09, 'yield': 0, 'mT': 400, 'clsd1s': 3.422522e-14, 'CLsexp': 1.711164e-11, 'var': 0, 'type': 'bWN', 'mX': 280, 'CLs': 1.0293e-11}, 
+        {'clsu1s': 8.401868e-05, 'yield': 0, 'mT': 400, 'clsd1s': 2.019473e-08, 'CLsexp': 1.541755e-06, 'var': 0, 'type': 'bWN', 'mX': 310, 'CLs': 9.983369e-07}, 
+        {'clsu1s': 0.01844538, 'yield': 0, 'mT': 450, 'clsd1s': 0.0001018047, 'CLsexp': 0.001596272, 'var': 0, 'type': 'bWN', 'mX': 285, 'CLs': 0.001175576}, 
+        {'clsu1s': 0.0001379672, 'yield': 0, 'mT': 450, 'clsd1s': 4.21567e-08, 'CLsexp': 2.852267e-06, 'var': 0, 'type': 'bWN', 'mX': 300, 'CLs': 1.859922e-06}, 
+        {'clsu1s': 7.11427e-07, 'yield': 0, 'mT': 450, 'clsd1s': 2.229939e-11, 'CLsexp': 4.738196e-09, 'var': 0, 'type': 'bWN', 'mX': 330, 'CLs': 3.014971e-09}, 
+        {'clsu1s': 0.00384088, 'yield': 0, 'mT': 450, 'clsd1s': 7.312368e-06, 'CLsexp': 0.0001966227, 'var': 0, 'type': 'bWN', 'mX': 360, 'CLs': 0.000136144}, 
+        {'clsu1s': 0.08860304, 'yield': 0, 'mT': 500, 'clsd1s': 0.001814737, 'CLsexp': 0.0145759, 'var': 0, 'type': 'bWN', 'mX': 335, 'CLs': 0.01139726}, 
+        {'clsu1s': 0.001331563, 'yield': 0, 'mT': 500, 'clsd1s': 1.346915e-06, 'CLsexp': 4.984874e-05, 'var': 0, 'type': 'bWN', 'mX': 350, 'CLs': 3.367344e-05}, 
+        {'clsu1s': 0.0003209771, 'yield': 0, 'mT': 500, 'clsd1s': 1.500235e-07, 'CLsexp': 8.194619e-06, 'var': 0, 'type': 'bWN', 'mX': 380, 'CLs': 5.39764e-06}, 
+        {'clsu1s': 0.1128657, 'yield': 0, 'mT': 500, 'clsd1s': 0.002931589, 'CLsexp': 0.0208427, 'var': 0, 'type': 'bWN', 'mX': 410, 'CLs': 0.0163605}, 
+        {'clsu1s': 0.1239344, 'yield': 0, 'mT': 550, 'clsd1s': 0.003541196, 'CLsexp': 0.02397174, 'var': 0, 'type': 'bWN', 'mX': 385, 'CLs': 0.01888272}, 
+        {'clsu1s': 0.01588595, 'yield': 0, 'mT': 550, 'clsd1s': 7.857028e-05, 'CLsexp': 0.00130253, 'var': 0, 'type': 'bWN', 'mX': 400, 'CLs': 0.000940855}, 
+        {'clsu1s': 0.007814169, 'yield': 0, 'mT': 550, 'clsd1s': 2.355532e-05, 'CLsexp': 0.0005019514, 'var': 0, 'type': 'bWN', 'mX': 430, 'CLs': 0.0003544116}, 
+        {'clsu1s': 0.2048478, 'yield': 0, 'mT': 550, 'clsd1s': 0.01018022, 'CLsexp': 0.05178357, 'var': 0, 'type': 'bWN', 'mX': 460, 'CLs': 0.04214599}, 
+        {'clsu1s': 0.2739105, 'yield': 0, 'mT': 600, 'clsd1s': 0.01951886, 'CLsexp': 0.0823245, 'var': 0, 'type': 'bWN', 'mX': 435, 'CLs': 0.0683987}, 
+        {'clsu1s': 0.122008, 'yield': 0, 'mT': 600, 'clsd1s': 0.003430418, 'CLsexp': 0.02341522, 'var': 0, 'type': 'bWN', 'mX': 450, 'CLs': 0.01846718}, 
+        {'clsu1s': 0.036258, 'yield': 0, 'mT': 600, 'clsd1s': 0.0003382188, 'CLsexp': 0.004060589, 'var': 0, 'type': 'bWN', 'mX': 480, 'CLs': 0.00302015}, 
+        {'clsu1s': 0.5742833, 'yield': 0, 'mT': 600, 'clsd1s': 0.1296265, 'CLsexp': 0.2973197, 'var': 0, 'type': 'bWN', 'mX': 510, 'CLs': 0.2660944}, 
+        {'clsu1s': 0.4870229, 'yield': 0, 'mT': 650, 'clsd1s': 0.08152483, 'CLsexp': 0.2193804, 'var': 0, 'type': 'bWN', 'mX': 485, 'CLs': 0.1924664}, 
+        {'clsu1s': 0.2865013, 'yield': 0, 'mT': 650, 'clsd1s': 0.02165987, 'CLsexp': 0.08857919, 'var': 0, 'type': 'bWN', 'mX': 500, 'CLs': 0.0739233}, 
+        {'clsu1s': 0.2354214, 'yield': 0, 'mT': 650, 'clsd1s': 0.01384174, 'CLsexp': 0.06452526, 'var': 0, 'type': 'bWN', 'mX': 530, 'CLs': 0.05303074}, 
+        {'clsu1s': 0.701192, 'yield': 0, 'mT': 650, 'clsd1s': 0.2404436, 'CLsexp': 0.4397601, 'var': 0, 'type': 'bWN', 'mX': 560, 'CLs': 0.4049706}, 
+        {'clsu1s': 0.5894252, 'yield': 0, 'mT': 700, 'clsd1s': 0.13994, 'CLsexp': 0.3123742, 'var': 0, 'type': 'bWN', 'mX': 535, 'CLs': 0.2806093}, 
+        {'clsu1s': 0.4820755, 'yield': 0, 'mT': 700, 'clsd1s': 0.07929911, 'CLsexp': 0.2153826, 'var': 0, 'type': 'bWN', 'mX': 550, 'CLs': 0.188769}, 
+        {'clsu1s': 0.5130422, 'yield': 0, 'mT': 700, 'clsd1s': 0.09404536, 'CLsexp': 0.2411221, 'var': 0, 'type': 'bWN', 'mX': 580, 'CLs': 0.2129504}, 
+        {'clsu1s': 0.8369907, 'yield': 0, 'mT': 700, 'clsd1s': 0.4517152, 'CLsexp': 0.6430148, 'var': 0, 'type': 'bWN', 'mX': 610, 'CLs': 0.6112862}, 
+        {'clsu1s': 0.7230842, 'yield': 0, 'mT': 750, 'clsd1s': 0.2664186, 'CLsexp': 0.4684859, 'var': 0, 'type': 'bWN', 'mX': 585, 'CLs': 0.4335921}, 
+        {'clsu1s': 0.5464133, 'yield': 0, 'mT': 750, 'clsd1s': 0.1122849, 'CLsexp': 0.2708382, 'var': 0, 'type': 'bWN', 'mX': 600, 'CLs': 0.2408878}, 
+        {'clsu1s': 0.6311746, 'yield': 0, 'mT': 750, 'clsd1s': 0.172039, 'CLsexp': 0.3564623, 'var': 0, 'type': 'bWN', 'mX': 630, 'CLs': 0.3231999}, 
+        {'clsu1s': 0.8702831, 'yield': 0, 'mT': 750, 'clsd1s': 0.5276669, 'CLsexp': 0.7035779, 'var': 0, 'type': 'bWN', 'mX': 660, 'CLs': 0.6743694},
+
+        ### bffN ###
+        {'clsu1s': 7.083661e-10, 'yield': 0, 'mT': 300, 'clsd1s': 2.019115e-15, 'CLsexp': 1.427862e-12, 'var': 0, 'type': 'bffN', 'mX': 220, 'CLs': 8.1831e-13}, 
+        {'clsu1s': 2.154666e-05, 'yield': 0, 'mT': 300, 'clsd1s': 2.767294e-09, 'CLsexp': 2.895473e-07, 'var': 0, 'type': 'bffN', 'mX': 250, 'CLs': 1.861468e-07}, 
+        {'clsu1s': 0.9774579, 'yield': 0, 'mT': 300, 'clsd1s': 0.8891521, 'CLsexp': 0.9397926, 'var': 0, 'type': 'bffN', 'mX': 280, 'CLs': 0.9278998}, 
+        {'clsu1s': 1.699392e-07, 'yield': 0, 'mT': 350, 'clsd1s': 3.10671e-12, 'CLsexp': 8.652168e-10, 'var': 0, 'type': 'bffN', 'mX': 270, 'CLs': 5.502934e-10}, 
+        {'clsu1s': 0.004091294, 'yield': 0, 'mT': 350, 'clsd1s': 8.103696e-06, 'CLsexp': 0.0002135813, 'var': 0, 'type': 'bffN', 'mX': 300, 'CLs': 0.0001482365}, 
+        {'clsu1s': 0.9559102, 'yield': 0, 'mT': 350, 'clsd1s': 0.7973175, 'CLsexp': 0.8862115, 'var': 0, 'type': 'bffN', 'mX': 330, 'CLs': 0.869077}, 
+        {'clsu1s': 4.562658e-05, 'yield': 0, 'mT': 400, 'clsd1s': 8.233844e-09, 'CLsexp': 7.261012e-07, 'var': 0, 'type': 'bffN', 'mX': 320, 'CLs': 4.672434e-07}, 
+        {'clsu1s': 0.1087924, 'yield': 0, 'mT': 400, 'clsd1s': 0.002723401, 'CLsexp': 0.0197333, 'var': 0, 'type': 'bffN', 'mX': 350, 'CLs': 0.01545752}, 
+        {'clsu1s': 0.9859027, 'yield': 0, 'mT': 400, 'clsd1s': 0.9287362, 'CLsexp': 0.9618186, 'var': 0, 'type': 'bffN', 'mX': 380, 'CLs': 0.9512289}, 
+        {'clsu1s': 0.9998143, 'yield': 0, 'mT': 400, 'clsd1s': 0.9990157, 'CLsexp': 0.9994849, 'var': 0, 'type': 'bffN', 'mX': 393, 'CLs': 0.9994852}, 
+        {'clsu1s': 0.005986487, 'yield': 0, 'mT': 450, 'clsd1s': 1.513038e-05, 'CLsexp': 0.0003525111, 'var': 0, 'type': 'bffN', 'mX': 370, 'CLs': 0.0002472012}, 
+        {'clsu1s': 0.4077798, 'yield': 0, 'mT': 450, 'clsd1s': 0.05109822, 'CLsexp': 0.1603003, 'var': 0, 'type': 'bffN', 'mX': 400, 'CLs': 0.1381249}, 
+        {'clsu1s': 0.9927469, 'yield': 0, 'mT': 450, 'clsd1s': 0.9624835, 'CLsexp': 0.9801275, 'var': 0, 'type': 'bffN', 'mX': 430, 'CLs': 0.9712535}, 
+        {'clsu1s': 0.07723043, 'yield': 0, 'mT': 500, 'clsd1s': 0.001389641, 'CLsexp': 0.01192757, 'var': 0, 'type': 'bffN', 'mX': 420, 'CLs': 0.00918118}, 
+        {'clsu1s': 0.7388676, 'yield': 0, 'mT': 500, 'clsd1s': 0.2867511, 'CLsexp': 0.4900666, 'var': 0, 'type': 'bffN', 'mX': 450, 'CLs': 0.4551907}, 
+        {'clsu1s': 0.3255219, 'yield': 0, 'mT': 550, 'clsd1s': 0.02928261, 'CLsexp': 0.1093478, 'var': 0, 'type': 'bffN', 'mX': 470, 'CLs': 0.09222481}, 
+        {'clsu1s': 0.8083345, 'yield': 0, 'mT': 550, 'clsd1s': 0.3955396, 'CLsexp': 0.5946879, 'var': 0, 'type': 'bffN', 'mX': 500, 'CLs': 0.5614114}, 
+        {'clsu1s': 0.999905, 'yield': 0, 'mT': 550, 'clsd1s': 0.9994963, 'CLsexp': 0.9997364, 'var': 0, 'type': 'bffN', 'mX': 543, 'CLs': 0.9997365}, 
+        {'clsu1s': 0.5093929, 'yield': 0, 'mT': 600, 'clsd1s': 0.09220377, 'CLsexp': 0.2379989, 'var': 0, 'type': 'bffN', 'mX': 520, 'CLs': 0.209984}, 
+        {'clsu1s': 0.8751767, 'yield': 0, 'mT': 600, 'clsd1s': 0.5399446, 'CLsexp': 0.7129161, 'var': 0, 'type': 'bffN', 'mX': 550, 'CLs': 0.6839745}, 
+        {'clsu1s': 0.5468978, 'yield': 0, 'mT': 650, 'clsd1s': 0.1125693, 'CLsexp': 0.2712854, 'var': 0, 'type': 'bffN', 'mX': 570, 'CLs': 0.2414995}, 
+        {'clsu1s': 0.9392525, 'yield': 0, 'mT': 650, 'clsd1s': 0.7341779, 'CLsexp': 0.8471449, 'var': 0, 'type': 'bffN', 'mX': 600, 'CLs': 0.8267403},
+
+        ### tN ###
+        {'clsu1s': 0.7090586, 'yield': 0, 'mT': 190, 'clsd1s': 0.2494938, 'CLsexp': 0.4499252, 'var': 0, 'type': 'tN', 'mX': 17, 'CLs': 0.4304579}, 
+        {'clsu1s': 0.1277098, 'yield': 0, 'mT': 400, 'clsd1s': 0.003764123, 'CLsexp': 0.02507697, 'var': 0, 'type': 'tN', 'mX': 200, 'CLs': 0.02026906}, 
+        {'clsu1s': 0.5520328, 'yield': 0, 'mT': 500, 'clsd1s': 0.1156189, 'CLsexp': 0.2760528, 'var': 0, 'type': 'tN', 'mX': 300, 'CLs': 0.2463516}, 
+        {'clsu1s': 0.2256534, 'yield': 0, 'mT': 500, 'clsd1s': 0.0125948, 'CLsexp': 0.0603209, 'var': 0, 'type': 'tN', 'mX': 312, 'CLs': 0.04969146}, 
+        {'clsu1s': 0.3995295, 'yield': 0, 'mT': 500, 'clsd1s': 0.04850856, 'CLsexp': 0.1547317, 'var': 0, 'type': 'tN', 'mX': 327, 'CLs': 0.133335}, 
+        {'clsu1s': 0.7050076, 'yield': 0, 'mT': 550, 'clsd1s': 0.2447946, 'CLsexp': 0.4446687, 'var': 0, 'type': 'tN', 'mX': 350, 'CLs': 0.4101667}, 
+        {'clsu1s': 0.6101691, 'yield': 0, 'mT': 550, 'clsd1s': 0.1551824, 'CLsexp': 0.3337946, 'var': 0, 'type': 'tN', 'mX': 362, 'CLs': 0.3016023}, 
+        {'clsu1s': 0.5023255, 'yield': 0, 'mT': 550, 'clsd1s': 0.08871823, 'CLsexp': 0.2320196, 'var': 0, 'type': 'tN', 'mX': 377, 'CLs': 0.2045492}, 
+        {'clsu1s': 0.6228272, 'yield': 0, 'mT': 600, 'clsd1s': 0.1651607, 'CLsexp': 0.3473337, 'var': 0, 'type': 'tN', 'mX': 400, 'CLs': 0.3146313}, 
+        {'clsu1s': 0.5515196, 'yield': 0, 'mT': 600, 'clsd1s': 0.1153112, 'CLsexp': 0.2755741, 'var': 0, 'type': 'tN', 'mX': 412, 'CLs': 0.2457006}, 
+        {'clsu1s': 0.5654528, 'yield': 0, 'mT': 600, 'clsd1s': 0.1239092, 'CLsexp': 0.2887597, 'var': 0, 'type': 'tN', 'mX': 427, 'CLs': 0.2577961}, 
+        {'clsu1s': 0.7884219, 'yield': 0, 'mT': 650, 'clsd1s': 0.3607489, 'CLsexp': 0.5629814, 'var': 0, 'type': 'tN', 'mX': 450, 'CLs': 0.5292313}, 
+        {'clsu1s': 0.6611999, 'yield': 0, 'mT': 650, 'clsd1s': 0.1988918, 'CLsexp': 0.3906647, 'var': 0, 'type': 'tN', 'mX': 462, 'CLs': 0.3568156}, 
+        {'clsu1s': 0.8140416, 'yield': 0, 'mT': 650, 'clsd1s': 0.4061236, 'CLsexp': 0.6040511, 'var': 0, 'type': 'tN', 'mX': 477, 'CLs': 0.5712577}, 
+        {'clsu1s': 0.7840362, 'yield': 0, 'mT': 700, 'clsd1s': 0.3535084, 'CLsexp': 0.5561926, 'var': 0, 'type': 'tN', 'mX': 500, 'CLs': 0.5221931}
         # {{{
-        {"CLsexp": 4.353894e-08, "clsd1s": 2.970995e-10, "clsu1s": 4.522759e-06, "mg": 1000.0, "mn": 100.0},
-        {"CLsexp": 8.980757e-07, "clsd1s": 1.060292e-08, "clsu1s": 5.422916e-05, "mg": 1000.0, "mn": 300.0},
-        {"CLsexp": 0.03017863, "clsd1s": 0.004841628, "clsu1s": 0.1443597, "mg": 1000.0, "mn": 500.0},
-        {"CLsexp": 0.5150741, "clsd1s": 0.3112009, "clsu1s": 0.756493, "mg": 1000.0, "mn": 600.0},
-        {"CLsexp": 0.9849306, "clsd1s": 0.9714656, "clsu1s": 0.9945166, "mg": 1000.0, "mn": 700.0},
-        {"CLsexp": 0.9928526, "clsd1s": 0.9863989, "clsu1s": 0.9974121, "mg": 1000.0, "mn": 800.0},
-        {"CLsexp": 4.705227e-05, "clsd1s": 1.254989e-06, "clsu1s": 0.001272949, "mg": 1100.0, "mn": 400.0},
-        {"CLsexp": 0.001388201, "clsd1s": 8.520449e-05, "clsu1s": 0.01664823, "mg": 1100.0, "mn": 500.0},
-        {"CLsexp": 0.5682141, "clsd1s": 0.3663797, "clsu1s": 0.7917723, "mg": 1100.0, "mn": 600.0},
-        {"CLsexp": 0.4134072, "clsd1s": 0.2176969, "clsu1s": 0.6801528, "mg": 1100.0, "mn": 700.0},
-        {"CLsexp": 0.9815644, "clsd1s": 0.9651648, "clsu1s": 0.9932775, "mg": 1100.0, "mn": 800.0},
-        {"CLsexp": 0.7016212, "clsd1s": 0.5251138, "clsu1s": 0.8692499, "mg": 1200.0, "mn": 800.0},
-        {"CLsexp": 1.180193e-08, "clsd1s": 6.454095e-11, "clsu1s": 1.526817e-06, "mg": 1200.0, "mn": 100.0},
-        {"CLsexp": 1.141418e-06, "clsd1s": 1.410794e-08, "clsu1s": 6.587157e-05, "mg": 1200.0, "mn": 300.0},
-        {"CLsexp": 0.0001392276, "clsd1s": 4.767594e-06, "clsu1s": 0.002948429, "mg": 1200.0, "mn": 400.0},
-        {"CLsexp": 4.546394e-05, "clsd1s": 1.203337e-06, "clsu1s": 0.001239297, "mg": 1200.0, "mn": 500.0},
-        {"CLsexp": 0.004528425, "clsd1s": 0.0003896487, "clsu1s": 0.03919045, "mg": 1200.0, "mn": 600.0},
-        {"CLsexp": 0.09198642, "clsd1s": 0.02285691, "clsu1s": 0.2931835, "mg": 1200.0, "mn": 700.0},
-        {"CLsexp": 0.1129462, "clsd1s": 0.03068098, "clsu1s": 0.3319021, "mg": 1300.0, "mn": 700.0},
-        {"CLsexp": 0.2823834, "clsd1s": 0.1197198, "clsu1s": 0.5587663, "mg": 1300.0, "mn": 800.0},
-        {"CLsexp": 1.189113e-05, "clsd1s": 2.352968e-07, "clsu1s": 0.0004314413, "mg": 1300.0, "mn": 100.0},
-        {"CLsexp": 2.147245e-05, "clsd1s": 4.81941e-07, "clsu1s": 0.000688246, "mg": 1300.0, "mn": 200.0},
-        {"CLsexp": 1.117557e-05, "clsd1s": 2.182716e-07, "clsu1s": 0.0004107193, "mg": 1300.0, "mn": 300.0},
-        {"CLsexp": 5.241928e-05, "clsd1s": 1.432486e-06, "clsu1s": 0.001384767, "mg": 1300.0, "mn": 400.0},
-        {"CLsexp": 0.0007886549, "clsd1s": 4.160286e-05, "clsu1s": 0.01095618, "mg": 1300.0, "mn": 500.0},
-        {"CLsexp": 0.005059822, "clsd1s": 0.0004501544, "clsu1s": 0.04240637, "mg": 1300.0, "mn": 600.0},
-        {"CLsexp": 0.009268721, "clsd1s": 0.0009952473, "clsu1s": 0.06487233, "mg": 1400.0, "mn": 600.0},
-        {"CLsexp": 0.05359963, "clsd1s": 0.01068035, "clsu1s": 0.2093916, "mg": 1400.0, "mn": 700.0},
-        {"CLsexp": 0.1714552, "clsd1s": 0.05643257, "clsu1s": 0.4238537, "mg": 1400.0, "mn": 800.0},
-        {"CLsexp": 9.468766e-05, "clsd1s": 2.962158e-06, "clsu1s": 0.002190805, "mg": 1400.0, "mn": 100.0},
-        {"CLsexp": 3.570032e-05, "clsd1s": 8.954436e-07, "clsu1s": 0.001025917, "mg": 1400.0, "mn": 200.0},
-        {"CLsexp": 0.0001278869, "clsd1s": 4.292187e-06, "clsu1s": 0.002762029, "mg": 1400.0, "mn": 300.0},
-        {"CLsexp": 0.002655014, "clsd1s": 0.0001953721, "clsu1s": 0.02671516, "mg": 1400.0, "mn": 400.0},
-        {"CLsexp": 0.002304162, "clsd1s": 0.0001628388, "clsu1s": 0.02410779, "mg": 1400.0, "mn": 500.0},
-        {"CLsexp": 0.006418154, "clsd1s": 0.000614031, "clsu1s": 0.05016757, "mg": 1500.0, "mn": 500.0},
-        {"CLsexp": 0.04201369, "clsd1s": 0.007621154, "clsu1s": 0.1791323, "mg": 1500.0, "mn": 600.0},
-        {"CLsexp": 0.07314844, "clsd1s": 0.01651348, "clsu1s": 0.2546025, "mg": 1500.0, "mn": 700.0},
-        {"CLsexp": 0.00400214, "clsd1s": 0.0003319201, "clsu1s": 0.03588429, "mg": 1500.0, "mn": 100.0},
-        {"CLsexp": 0.005622386, "clsd1s": 0.0005164806, "clsu1s": 0.04569427, "mg": 1500.0, "mn": 200.0},
-        {"CLsexp": 0.004573572, "clsd1s": 0.0003947049, "clsu1s": 0.03946821, "mg": 1500.0, "mn": 300.0},
-        {"CLsexp": 0.004684751, "clsd1s": 0.0004072238, "clsu1s": 0.0401485, "mg": 1500.0, "mn": 400.0},
-        {"CLsexp": 0.02015043, "clsd1s": 0.002801177, "clsu1s": 0.1103338, "mg": 1600.0, "mn": 400.0},
-        {"CLsexp": 0.06544986, "clsd1s": 0.01412092, "clsu1s": 0.2375311, "mg": 1600.0, "mn": 500.0},
-        {"CLsexp": 0.07034667, "clsd1s": 0.01562886, "clsu1s": 0.2484884, "mg": 1600.0, "mn": 600.0},
-        {"CLsexp": 0.03350922, "clsd1s": 0.005585843, "clsu1s": 0.1546309, "mg": 1600.0, "mn": 100.0},
-        {"CLsexp": 0.04009356, "clsd1s": 0.007145345, "clsu1s": 0.1737933, "mg": 1600.0, "mn": 200.0},
-        {"CLsexp": 0.03282238, "clsd1s": 0.005429836, "clsu1s": 0.1525474, "mg": 1600.0, "mn": 300.0},
-        {"CLsexp": 0.1055402, "clsd1s": 0.02782751, "clsu1s": 0.318657, "mg": 1700.0, "mn": 300.0},
-        {"CLsexp": 0.1077652, "clsd1s": 0.02867475, "clsu1s": 0.3226832, "mg": 1700.0, "mn": 400.0},
-        {"CLsexp": 0.1462129, "clsd1s": 0.04464236, "clsu1s": 0.3865957, "mg": 1700.0, "mn": 500.0},
-        {"CLsexp": 0.137618, "clsd1s": 0.04086007, "clsu1s": 0.3731377, "mg": 1700.0, "mn": 100.0},
-        {"CLsexp": 0.111305, "clsd1s": 0.03004042, "clsu1s": 0.3290049, "mg": 1700.0, "mn": 200.0},
-        {"CLsexp": 0.8678336, "clsd1s": 0.7672244, "clsu1s": 0.948177, "mg": 600.0, "mn": 100.0},
-        {"CLsexp": 0.9474435, "clsd1s": 0.9027779, "clsu1s": 0.9804177, "mg": 600.0, "mn": 300.0},
-        {"CLsexp": 0.9870399, "clsd1s": 0.9754272, "clsu1s": 0.9952903, "mg": 600.0, "mn": 400.0},
-        {"CLsexp": 0.9976635, "clsd1s": 0.9955404, "clsu1s": 0.9991565, "mg": 600.0, "mn": 500.0},
-        {"CLsexp": 0.001936636, "clsd1s": 0.0001303269, "clsu1s": 0.02124461, "mg": 800.0, "mn": 100.0},
-        {"CLsexp": 0.8665131, "clsd1s": 0.7650891, "clsu1s": 0.9476144, "mg": 800.0, "mn": 300.0},
-        {"CLsexp": 0.9289271, "clsd1s": 0.8700247, "clsu1s": 0.9732051, "mg": 800.0, "mn": 400.0},
-        {"CLsexp": 0.9679028, "clsd1s": 0.9398648, "clsu1s": 0.9881946, "mg": 800.0, "mn": 500.0},
-        {"CLsexp": 0.4273316, "clsd1s": 0.2295875, "clsu1s": 0.6913883, "mg": 800.0, "mn": 600.0},
-        {"CLsexp": 0.999709, "clsd1s": 0.9994437, "clsu1s": 0.999895, "mg": 800.0, "mn": 700.0},
-        {"CLsexp": 0.6652005, "clsd1s": 0.4788083, "clsu1s": 0.8495088, "mg": 900.0, "mn": 600.0},
-        {"CLsexp": 0.996531, "clsd1s": 0.9933835, "clsu1s": 0.9987469, "mg": 900.0, "mn": 700.0},
+        #{"CLsexp": 4.353894e-08, "clsd1s": 2.970995e-10, "clsu1s": 4.522759e-06, "mg": 1000.0, "mn": 100.0},
+        #{"CLsexp": 8.980757e-07, "clsd1s": 1.060292e-08, "clsu1s": 5.422916e-05, "mg": 1000.0, "mn": 300.0},
+        #{"CLsexp": 0.03017863, "clsd1s": 0.004841628, "clsu1s": 0.1443597, "mg": 1000.0, "mn": 500.0},
+        #{"CLsexp": 0.5150741, "clsd1s": 0.3112009, "clsu1s": 0.756493, "mg": 1000.0, "mn": 600.0},
+        #{"CLsexp": 0.9849306, "clsd1s": 0.9714656, "clsu1s": 0.9945166, "mg": 1000.0, "mn": 700.0},
+        #{"CLsexp": 0.9928526, "clsd1s": 0.9863989, "clsu1s": 0.9974121, "mg": 1000.0, "mn": 800.0},
+        #{"CLsexp": 4.705227e-05, "clsd1s": 1.254989e-06, "clsu1s": 0.001272949, "mg": 1100.0, "mn": 400.0},
+        #{"CLsexp": 0.001388201, "clsd1s": 8.520449e-05, "clsu1s": 0.01664823, "mg": 1100.0, "mn": 500.0},
+        #{"CLsexp": 0.5682141, "clsd1s": 0.3663797, "clsu1s": 0.7917723, "mg": 1100.0, "mn": 600.0},
+        #{"CLsexp": 0.4134072, "clsd1s": 0.2176969, "clsu1s": 0.6801528, "mg": 1100.0, "mn": 700.0},
+        #{"CLsexp": 0.9815644, "clsd1s": 0.9651648, "clsu1s": 0.9932775, "mg": 1100.0, "mn": 800.0},
+        #{"CLsexp": 0.7016212, "clsd1s": 0.5251138, "clsu1s": 0.8692499, "mg": 1200.0, "mn": 800.0},
+        #{"CLsexp": 1.180193e-08, "clsd1s": 6.454095e-11, "clsu1s": 1.526817e-06, "mg": 1200.0, "mn": 100.0},
+        #{"CLsexp": 1.141418e-06, "clsd1s": 1.410794e-08, "clsu1s": 6.587157e-05, "mg": 1200.0, "mn": 300.0},
+        #{"CLsexp": 0.0001392276, "clsd1s": 4.767594e-06, "clsu1s": 0.002948429, "mg": 1200.0, "mn": 400.0},
+        #{"CLsexp": 4.546394e-05, "clsd1s": 1.203337e-06, "clsu1s": 0.001239297, "mg": 1200.0, "mn": 500.0},
+        #{"CLsexp": 0.004528425, "clsd1s": 0.0003896487, "clsu1s": 0.03919045, "mg": 1200.0, "mn": 600.0},
+        #{"CLsexp": 0.09198642, "clsd1s": 0.02285691, "clsu1s": 0.2931835, "mg": 1200.0, "mn": 700.0},
+        #{"CLsexp": 0.1129462, "clsd1s": 0.03068098, "clsu1s": 0.3319021, "mg": 1300.0, "mn": 700.0},
+        #{"CLsexp": 0.2823834, "clsd1s": 0.1197198, "clsu1s": 0.5587663, "mg": 1300.0, "mn": 800.0},
+        #{"CLsexp": 1.189113e-05, "clsd1s": 2.352968e-07, "clsu1s": 0.0004314413, "mg": 1300.0, "mn": 100.0},
+        #{"CLsexp": 2.147245e-05, "clsd1s": 4.81941e-07, "clsu1s": 0.000688246, "mg": 1300.0, "mn": 200.0},
+        #{"CLsexp": 1.117557e-05, "clsd1s": 2.182716e-07, "clsu1s": 0.0004107193, "mg": 1300.0, "mn": 300.0},
+        #{"CLsexp": 5.241928e-05, "clsd1s": 1.432486e-06, "clsu1s": 0.001384767, "mg": 1300.0, "mn": 400.0},
+        #{"CLsexp": 0.0007886549, "clsd1s": 4.160286e-05, "clsu1s": 0.01095618, "mg": 1300.0, "mn": 500.0},
+        #{"CLsexp": 0.005059822, "clsd1s": 0.0004501544, "clsu1s": 0.04240637, "mg": 1300.0, "mn": 600.0},
+        #{"CLsexp": 0.009268721, "clsd1s": 0.0009952473, "clsu1s": 0.06487233, "mg": 1400.0, "mn": 600.0},
+        #{"CLsexp": 0.05359963, "clsd1s": 0.01068035, "clsu1s": 0.2093916, "mg": 1400.0, "mn": 700.0},
+        #{"CLsexp": 0.1714552, "clsd1s": 0.05643257, "clsu1s": 0.4238537, "mg": 1400.0, "mn": 800.0},
+        #{"CLsexp": 9.468766e-05, "clsd1s": 2.962158e-06, "clsu1s": 0.002190805, "mg": 1400.0, "mn": 100.0},
+        #{"CLsexp": 3.570032e-05, "clsd1s": 8.954436e-07, "clsu1s": 0.001025917, "mg": 1400.0, "mn": 200.0},
+        #{"CLsexp": 0.0001278869, "clsd1s": 4.292187e-06, "clsu1s": 0.002762029, "mg": 1400.0, "mn": 300.0},
+        #{"CLsexp": 0.002655014, "clsd1s": 0.0001953721, "clsu1s": 0.02671516, "mg": 1400.0, "mn": 400.0},
+        #{"CLsexp": 0.002304162, "clsd1s": 0.0001628388, "clsu1s": 0.02410779, "mg": 1400.0, "mn": 500.0},
+        #{"CLsexp": 0.006418154, "clsd1s": 0.000614031, "clsu1s": 0.05016757, "mg": 1500.0, "mn": 500.0},
+        #{"CLsexp": 0.04201369, "clsd1s": 0.007621154, "clsu1s": 0.1791323, "mg": 1500.0, "mn": 600.0},
+        #{"CLsexp": 0.07314844, "clsd1s": 0.01651348, "clsu1s": 0.2546025, "mg": 1500.0, "mn": 700.0},
+        #{"CLsexp": 0.00400214, "clsd1s": 0.0003319201, "clsu1s": 0.03588429, "mg": 1500.0, "mn": 100.0},
+        #{"CLsexp": 0.005622386, "clsd1s": 0.0005164806, "clsu1s": 0.04569427, "mg": 1500.0, "mn": 200.0},
+        #{"CLsexp": 0.004573572, "clsd1s": 0.0003947049, "clsu1s": 0.03946821, "mg": 1500.0, "mn": 300.0},
+        #{"CLsexp": 0.004684751, "clsd1s": 0.0004072238, "clsu1s": 0.0401485, "mg": 1500.0, "mn": 400.0},
+        #{"CLsexp": 0.02015043, "clsd1s": 0.002801177, "clsu1s": 0.1103338, "mg": 1600.0, "mn": 400.0},
+        #{"CLsexp": 0.06544986, "clsd1s": 0.01412092, "clsu1s": 0.2375311, "mg": 1600.0, "mn": 500.0},
+        #{"CLsexp": 0.07034667, "clsd1s": 0.01562886, "clsu1s": 0.2484884, "mg": 1600.0, "mn": 600.0},
+        #{"CLsexp": 0.03350922, "clsd1s": 0.005585843, "clsu1s": 0.1546309, "mg": 1600.0, "mn": 100.0},
+        #{"CLsexp": 0.04009356, "clsd1s": 0.007145345, "clsu1s": 0.1737933, "mg": 1600.0, "mn": 200.0},
+        #{"CLsexp": 0.03282238, "clsd1s": 0.005429836, "clsu1s": 0.1525474, "mg": 1600.0, "mn": 300.0},
+        #{"CLsexp": 0.1055402, "clsd1s": 0.02782751, "clsu1s": 0.318657, "mg": 1700.0, "mn": 300.0},
+        #{"CLsexp": 0.1077652, "clsd1s": 0.02867475, "clsu1s": 0.3226832, "mg": 1700.0, "mn": 400.0},
+        #{"CLsexp": 0.1462129, "clsd1s": 0.04464236, "clsu1s": 0.3865957, "mg": 1700.0, "mn": 500.0},
+        #{"CLsexp": 0.137618, "clsd1s": 0.04086007, "clsu1s": 0.3731377, "mg": 1700.0, "mn": 100.0},
+        #{"CLsexp": 0.111305, "clsd1s": 0.03004042, "clsu1s": 0.3290049, "mg": 1700.0, "mn": 200.0},
+        #{"CLsexp": 0.8678336, "clsd1s": 0.7672244, "clsu1s": 0.948177, "mg": 600.0, "mn": 100.0},
+        #{"CLsexp": 0.9474435, "clsd1s": 0.9027779, "clsu1s": 0.9804177, "mg": 600.0, "mn": 300.0},
+        #{"CLsexp": 0.9870399, "clsd1s": 0.9754272, "clsu1s": 0.9952903, "mg": 600.0, "mn": 400.0},
+        #{"CLsexp": 0.9976635, "clsd1s": 0.9955404, "clsu1s": 0.9991565, "mg": 600.0, "mn": 500.0},
+        #{"CLsexp": 0.001936636, "clsd1s": 0.0001303269, "clsu1s": 0.02124461, "mg": 800.0, "mn": 100.0},
+        #{"CLsexp": 0.8665131, "clsd1s": 0.7650891, "clsu1s": 0.9476144, "mg": 800.0, "mn": 300.0},
+        #{"CLsexp": 0.9289271, "clsd1s": 0.8700247, "clsu1s": 0.9732051, "mg": 800.0, "mn": 400.0},
+        #{"CLsexp": 0.9679028, "clsd1s": 0.9398648, "clsu1s": 0.9881946, "mg": 800.0, "mn": 500.0},
+        #{"CLsexp": 0.4273316, "clsd1s": 0.2295875, "clsu1s": 0.6913883, "mg": 800.0, "mn": 600.0},
+        #{"CLsexp": 0.999709, "clsd1s": 0.9994437, "clsu1s": 0.999895, "mg": 800.0, "mn": 700.0},
+        #{"CLsexp": 0.6652005, "clsd1s": 0.4788083, "clsu1s": 0.8495088, "mg": 900.0, "mn": 600.0},
+        #{"CLsexp": 0.996531, "clsd1s": 0.9933835, "clsu1s": 0.9987469, "mg": 900.0, "mn": 700.0},
         # }}}
     ]
 
@@ -388,8 +545,8 @@ if __name__ == "__main__":
     ys = []
     zs = []
     for pointDict in exampleHarvest:
-        xs.append(pointDict["mg"])
-        ys.append(pointDict["mn"])
+        xs.append(pointDict["mT"])
+        ys.append(pointDict["mX"])
         zs.append(ROOT.TMath.NormQuantile(1-pointDict["CLsexp"]))
 
     print("X"*50)
@@ -409,41 +566,59 @@ if __name__ == "__main__":
     #atlasStyle.setAtlasStyle(th2=True, reset=True)
     level = ROOT.TMath.NormQuantile(0.95) # draw 95% cls contour
     transformation = lambda p: ROOT.TMath.NormQuantile(1-p) # transform to significances for drawing
-    x = "mg"
-    y = "mn"
+    x = "mT"
+    y = "mX"
     smooth = True
     npx = None
     npy = None
     # ROOT.gStyle.SetNumberContours(100)
-    # npx = 500
-    # npy = 500
+    npx = 80
+    npy = 80
     clsexp = triwsmooth(exampleHarvest, "CLsexp", x, y, transformation=transformation, smooth=smooth, npx=npx, npy=npy)
     clsexp_up = triwsmooth(exampleHarvest, "clsu1s", x, y, transformation=transformation, smooth=smooth, npx=npx, npy=npy)
     clsexp_down = triwsmooth(exampleHarvest, "clsd1s", x, y, transformation=transformation, smooth=smooth, npx=npx, npy=npy)
     fixedhist = FixAndSetBorders(clsexp, "cls", "cls")
     fixedhist_up = FixAndSetBorders(clsexp_up, "cls_up", "cls_up")
     fixedhist_down = FixAndSetBorders(clsexp_down, "cls_down", "cls_down")
-    contours = getContours(fixedhist, level)
-    contours_up = getContours(fixedhist_up, level)
-    contours_down = getContours(fixedhist_down, level)
-    errorband = myOneSigmaBand(contours_up[0], contours_down[0])
+    #contours = getContours(fixedhist, level)
+    #contours_up = getContours(fixedhist_up, level)
+    #contours_down = getContours(fixedhist_down, level)
+    #errorband = myOneSigmaBand(contours_up[0], contours_down[0])
+    contours_5 = getContours(fixedhist, 5)
+    contours_3 = getContours(fixedhist, 3)
     c = ROOT.TCanvas()
-    numbers = drawNumbers(exampleHarvest, "CLsexp", x, y)
+    c.SetRightMargin(0.15)
+    leg = ROOT.TLegend(0.18, PS.ThirdLine-0.12, 0.4, PS.ThirdLine-0.03)
+    PS.legend(leg)
+    numbers = drawNumbers(exampleHarvest, "CLsexp", x, y, drawOnlyDots=True)
     fixedhist.Draw("colz")
-    errorband.SetFillStyle(3354)
-    errorband.SetFillColor(ROOT.kBlack)
-    errorband.Draw("f same")
-    for contour in contours_up + contours_down:
+    fixedhist.SetMinimum(0.01)
+    fixedhist.GetXaxis().SetTitle('m_{#tilde{t}_{1}}')
+    fixedhist.GetYaxis().SetTitle('m_{#tilde{#chi}_{1}}')
+    #errorband.SetFillStyle(3354)
+    #errorband.SetFillColor(ROOT.kBlack)
+    #errorband.Draw("f same")
+    #for contour in contours_up + contours_down:
+    for contour in contours_3:
         contour.SetLineColor(ROOT.kBlack)
         contour.SetLineStyle(7)
         contour.Draw("l same")
-    for contour in contours:
+    #for contour in contours:
+    for contour in contours_5:
         contour.SetLineStyle(1)
         contour.SetLineColor(ROOT.kBlack)
         contour.Draw("l same")
-    numbers = drawNumbers(exampleHarvest, "CLsexp", x, y)
+    leg.AddEntry(contours_3[0],"3 #sigma", "l")
+    leg.AddEntry(contours_5[0],"5 #sigma", "l")
+    numbers = drawNumbers(exampleHarvest, "CLsexp", x, y, drawOnlyDots=True)
     # g = getPointGraph(exampleHarvest, "CLsexp", x, y, transformation=transformation, smooth=smooth, npx=npx, npy=npy)
     # g.Draw("tri")
+    PS.atlas('Work in progress')
+    PS.sqrts_lumi(13, 140.5, x=0.18)
+    PS.string(x=0.18, y=PS.ThirdLine, text="exp. significance")
+
+    leg.Draw()
+    deco = draw_deco(c)
     c.SaveAs("example_contour.pdf")
     #c.SaveAs("example_contour.C")
 

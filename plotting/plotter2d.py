@@ -29,7 +29,7 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
     c0 = ROOT.TCanvas("c0","c0",600,500)
     c0.SetFillColor(10)
     c0.SetBorderSize(1)
-    c0.SetLogz()
+    #c0.SetLogz()
     c0.SetRightMargin(0.15)
     #c0.SetGridy()
     #c0.SetGridx()
@@ -60,7 +60,7 @@ def plot(var1, var2, treeName, xtitle, ytitle, cut, bins1, bins2, store):
 
 def main():
 
-    wwwDir = "/project/etp5/dhandl/MachineLearning/plots/evaluateRNNTruthReo/CR/2D/"
+    wwwDir = "/project/etp5/dhandl/plots/Stop1L/FullRun2/2d/leadingBjetIsNotLeadingJet/"
     if not os.path.exists(wwwDir):
         os.makedirs(wwwDir)
         print ('Creating Directory ', wwwDir)
@@ -79,15 +79,16 @@ def main():
     #cut = '(n_jet>=4) && (n_lep==1) && (n_bjet>=1) && (mt>=90e3) && (met>=100e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
     
         
-    cut = '(n_jet>=4) && (n_lep==1) && (lep_pt[0]>25e3) && (n_bjet>=1) && (mt>=110e3) && (met>=230e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80)) && (outputScore>=0.2) && (outputScore<0.5)'
+    cut = '(n_jet>=4) && (n_lep==1) && (lep_pt[0]>25e3) && (n_bjet>=1) && (jet_bjet[0]==0) && (mt>=110e3) && (met>=230e3) && (jet_pt[0]>=25e3) && (jet_pt[1]>=25e3) && (jet_pt[2]>=25e3) && (jet_pt[3]>=25e3) && (dphi_jet0_ptmiss > 0.4) && (dphi_jet1_ptmiss > 0.4) && !((mT2tauLooseTau_GeV > -0.5) && (mT2tauLooseTau_GeV < 80))'
 
     sampleNames = [
             #{'name':'ttz', 'legendName':'t#bar{t}+Z', 'target':bkgDir+'mc16d_ttZ/*.root', 'color': ROOT.TColor.GetColor('#E67067'), 'chain_name':'mc16d_ttZ_Nom'}, 
             #{'name':'multiboson', 'legendName':'Multiboson', 'target':bkgDir+'mc16d_multiboson/*.root', 'color': ROOT.TColor.GetColor('#54C571'), 'chain_name':'mc16d_multiboson_Nom'}, 
+            {'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
+            {'name':'stop_bWN_450_300', 'legendName':'m(#tilde{t},#tilde{#chi}_{1}^{0})=(450,300)', 'target':bkgDir+'stop_bWN_450_300_mc16d/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'stop_bWN_450_300_mc16d_Nom'},
             {'name':'singletop', 'legendName':'Single top', 'target':bkgDir+'mc16d_singletop/*.root', 'color': ROOT.TColor.GetColor('#82DE68'), 'chain_name':'mc16d_singletop_Nom'}, 
             {'name':'wjets', 'legendName':'W+jets', 'target':bkgDir+'mc16d_wjets/*.root', 'color': ROOT.TColor.GetColor('#FCDD5D'), 'chain_name':'mc16d_wjets_Nom'}, 
-            {'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat==7 )' },
-            {'name':'ttbar2L', 'legendName':'t#bar{t} 2L', 'target':bkgDir+'mc16d_ttbar/*', 'color':ROOT.TColor.GetColor('#A5C6E8'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==0 || tt_cat==2 || tt_cat==3 || tt_cat==5 || tt_cat==6 )' },
+            {'name':'ttbar1L', 'legendName':'t#bar{t} 1L', 'target':bkgDir+'mc16d_ttbar/*.root', 'color':ROOT.TColor.GetColor('#0F75DB'), 'chain_name':'mc16d_ttbar_Nom', 'addCut':'( tt_cat==1 || tt_cat==4 || tt_cat>=7 )' },
             #{'name':'ttbar1L1tau', 'legendName':'t#bar{t} 1L1#tau', 'target':bkgDir+'powheg_ttbar/*', 'color': ROOT.TColor.GetColor('#5E9AD6'), 'chain_name':'powheg_ttbar_Nom', 'addCut':'( tt_cat==2 || tt_cat == 5 ) '}, 
     ]
 
@@ -108,7 +109,7 @@ def main():
         allVariables = []
         amt2 = {'name':'myAmt2', 'fileName':fileName+'_amt2', 'varStr':'amt2', 'Xtitle':'am_{T2} [GeV]', 'Ytitle':'Events', 'binning':[20,0,500], 'binningIsExplicit':False}
         met = {'name':'myMET', 'fileName':fileName+'_met', 'varStr':'(met*0.001)', 'Xtitle':'E_{T}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[40,0,1000], 'binningIsExplicit':False}
-        dphi_met_lep = {'name':'mydPhi', 'fileName':fileName+'_dphi_met_lep', 'varStr':'dphi_met_lep', 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[16,0,3.2], 'binningIsExplicit':False}
+        dphi = {'name':'mydPhi', 'fileName':fileName+'_dphi_met_lep', 'varStr':'dphi_met_lep', 'Xtitle':'#Delta#phi(l, E_{T}^{miss})', 'Ytitle':'Events', 'binning':[16,0,3.2], 'binningIsExplicit':False}
         mt = {'name':'myMT','fileName':fileName+'_mt', 'varStr':'mt*0.001', 'Xtitle':'m_{T} [GeV]', 'Ytitle':'Events', 'binning':[40,0,800], 'binningIsExplicit':False}
         Q = {'name':'myQ','fileName':fileName+'_Q', 'varStr':'1-mt*mt/(2*met*lep_pt[0])', 'Xtitle':'Q', 'Ytitle':'Events', 'binning':[30,-1,1], 'binningIsExplicit':False}
         njet = {'name':'mynjet','fileName':fileName+'_njet', 'varStr':'n_jet', 'Xtitle':'jets', 'Ytitle':'Events', 'binning':[11,-0.5,10.5], 'binningIsExplicit':False}
@@ -118,12 +119,13 @@ def main():
         dphi_jet0_ptmiss = {'name':'mydPhi_jet0ptmiss', 'fileName':fileName+'_dphi_jet0_ptmiss', 'varStr':'dphi_jet0_ptmiss', 'Xtitle':'#Delta#phi(jet0, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
         dphi_jet1_ptmiss = {'name':'mydPhi_jet1ptmiss', 'fileName':fileName+'_dphi_jet1_ptmiss', 'varStr':'dphi_jet1_ptmiss', 'Xtitle':'#Delta#phi(jet1, p_{T}^{miss})', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
         #amm = {'name':'myamm','fileName':fileName+'_amm', 'varStr':'(met*0.001)*(lep_pt[0]*0.001)', 'Xtitle':'amm', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
-        leppt0 = {'name':'myleppt0','fileName':fileName+'_lep_pt0', 'varStr':'lep_pt[0]*0.001', 'Xtitle':'p_{T}^{lep} [GeV]', 'Ytitle':'Events', 'binning':[24,0,600], 'binningIsExplicit':False}
+        leppt0 = {'name':'myleppt0','fileName':fileName+'_lep_pt', 'varStr':'lep_pt[0]*0.001', 'Xtitle':'p_{T}^{lep} [GeV]', 'Ytitle':'Events', 'binning':[24,0,600], 'binningIsExplicit':False}
         mbl = {'name':'mymbl','fileName':fileName+'_m_bl', 'varStr':'m_bl*0.001', 'Xtitle':'m_{b,l} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
         nlep = {'name':'mynlep','fileName':fileName+'_nlep', 'varStr':'n_lep', 'Xtitle':'N lep', 'Ytitle':'Events', 'binning':[10,0,10], 'binningIsExplicit':False}
         lep_phi = {'name':'mylphi', 'fileName':fileName+'_lep_phi', 'varStr':'lep_phi', 'Xtitle':'#phi(l)', 'Ytitle':'Events', 'binning':[16,0,3.2], 'binningIsExplicit':False}
         lep_eta = {'name':'myleta', 'fileName':fileName+'_lep_eta', 'varStr':'lep_eta', 'Xtitle':'#eta(l)', 'Ytitle':'Events', 'binning':[32,-3.2,3.2], 'binningIsExplicit':False}
         R = {'name':'myR', 'fileName':fileName+'_R', 'varStr':'lep_phi*lep_phi+lep_eta*lep_eta', 'Xtitle':'R', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
+        bjetpt0 = {'name':'mybjetpT0','fileName':fileName+'_bjetpT0', 'varStr':'bjet_pt[0]*0.001', 'Xtitle':'p_{T}^{bjet1} [GeV]', 'Ytitle':'Events', 'binning':[32,0,800], 'binningIsExplicit':False}
         jetpt0 = {'name':'myjetpT0','fileName':fileName+'_jetpT0', 'varStr':'jet_pt[0]*0.001', 'Xtitle':'p_{T}^{jet1} [GeV]', 'Ytitle':'Events', 'binning':[32,0,800], 'binningIsExplicit':False}
         jetpt1 = {'name':'myjetpT1','fileName':fileName+'_jetpT1', 'varStr':'jet_pt[1]*0.001', 'Xtitle':'p_{T}^{jet2} [GeV]', 'Ytitle':'Events', 'binning':[24,0,600], 'binningIsExplicit':False}
         jetpt2 = {'name':'myjetpT2','fileName':fileName+'_jetpT2', 'varStr':'jet_pt[2]*0.001', 'Xtitle':'p_{T}^{jet3} [GeV]', 'Ytitle':'Events', 'binning':[20,0,500], 'binningIsExplicit':False}
@@ -133,20 +135,23 @@ def main():
         dphi_b_lep_max = {'name':'mydPhi_blepmax', 'fileName':fileName+'_dphi_b_lep_max', 'varStr':'dphi_b_lep_max', 'Xtitle':'max(#Delta#phi(b, l))', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
         dphi_b_ptmiss_max = {'name':'mydPhi_bptmissmax', 'fileName':fileName+'_dphi_b_ptmiss_max', 'varStr':'dphi_b_ptmiss_max', 'Xtitle':'max(#Delta#phi(b, p_{T}^{miss}))', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
         metprojlep = {'name':'myMETprojLEP', 'fileName':fileName+'_met_proj_lep', 'varStr':'met_proj_lep*0.001', 'Xtitle':'E_{T,l}^{miss} [GeV]', 'Ytitle':'Events', 'binning':[30,0,600], 'binningIsExplicit':False}
-        dRbjetlep = {'name':'mydRbjetlep', 'fileName':fileName+'_dr_bjet_lep', 'varStr':'dr_bjet_lep', 'Xtitle':'#DeltaR(b,l)', 'Ytitle':'Events', 'binning':[40,0,3.2], 'binningIsExplicit':False}
+        dRbjetlep = {'name':'mydRbjetlep', 'fileName':fileName+'_dr_bjet_lep', 'varStr':'dr_bjet_lep', 'Xtitle':'#DeltaR(b,l)', 'Ytitle':'Events', 'binning':[40,0,4], 'binningIsExplicit':False}
         bjetpt = {'name':'myBjetpT','fileName':fileName+'_bjet_pt', 'varStr':'bjet_pt*0.001', 'Xtitle':'p_{T}^{bjet} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
         bjetpt0 = {'name':'myBjetpT0','fileName':fileName+'_bjet_pt0', 'varStr':'bjet_pt[0]*0.001', 'Xtitle':'p_{T}^{bjet0} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
         bjetpt1 = {'name':'myBjetpT1','fileName':fileName+'_bjet_pt1', 'varStr':'bjet_pt[1]*0.001', 'Xtitle':'p_{T}^{bjet1} [GeV]', 'Ytitle':'Events', 'binning':[30,0,500], 'binningIsExplicit':False}
         mTblMET = {'name':'myMtblMet','fileName':fileName+'_mT_blMET', 'varStr':'mT_blMET*0.001', 'Xtitle':'m_{T}^{blMET} [GeV]', 'Ytitle':'Events', 'binning':[50,100,700], 'binningIsExplicit':False}
         mtopX2 = {'name':'mymtopX2','fileName':fileName+'_m_top_chi2', 'varStr':'m_top_chi2', 'Xtitle':'m_{top}^{#chi 2} [GeV]', 'Ytitle':'Events', 'binning':[40,0,800], 'binningIsExplicit':False}
         mtop = {'name':'mymtop','fileName':fileName+'_m_top_reclustered', 'varStr':'hadtop_cand_m[0]*0.001', 'Xtitle':'m_{top}^{reclustered} [GeV]', 'Ytitle':'Events', 'binning':[20,0,400], 'binningIsExplicit':False}
-        output = {'name':'myML','fileName':fileName+'_RNN_output', 'varStr':'outputScore', 'Xtitle':'RNN', 'Ytitle':'Events', 'binning':[10,0,1], 'binningIsExplicit':False}
+        output = {'name':'myML','fileName':fileName+'_RNN_output', 'varStr':'outputScore', 'Xtitle':'RNN', 'Ytitle':'Events', 'binning':[20,0,1], 'binningIsExplicit':False}
 
 
-        #allVariables.append(met)
-        #allVariables.append(dphimetlep)
-        #allVariables.append(amt2)
+        allVariables.append(dRbjetlep)
         allVariables.append(mt)
+        allVariables.append(dphi)
+        allVariables.append(leppt0)
+        allVariables.append(bjetpt0)
+        allVariables.append(met)
+        allVariables.append(amt2)
         #allVariables.append(Q)
         #allVariables.append(njet)
         #allVariables.append(nbjet)
@@ -154,7 +159,6 @@ def main():
         #allVariables.append(ht)
         #allVariables.append(dphi_jet0_ptmiss)
         #allVariables.append(dphi_jet1_ptmiss)
-        #allVariables.append(leppt0)
         #allVariables.append(mbl)
         #allVariables.append(lep_phi)
         #allVariables.append(lep_eta)
@@ -168,10 +172,9 @@ def main():
         #allVariables.append(dphi_b_lep_max)
         #allVariables.append(dphi_b_ptmiss_max)
         #allVariables.append(metprojlep)
-        #allVariables.append(dRbjetlep)
         #allVariables.append(bjetpt)
         #allVariables.append(mTblMET)
-        allVariables.append(mtopX2)
+        #allVariables.append(output)
         
         countdiagrams = len(allVariables)*(len(allVariables)-1)/2
         nod = countdiagrams
@@ -181,7 +184,7 @@ def main():
         
         #-------------Plot one variable to the rest of the list-----------
         
-        variab=mt  #Variable to plot
+        variab=bjetpt0  #Variable to plot
         
         print 'Plotting ' + str(len(allVariables)-1) + ' diagrams...'
         for var in allVariables:

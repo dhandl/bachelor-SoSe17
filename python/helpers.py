@@ -44,7 +44,7 @@ def ATLASLumiLabelRatioPad(x,y,lumi="78",color=1):
   l.SetTextSize(0.045);
   l.SetTextColor(color);
   dely = 0.05*472*ROOT.gPad.GetWh()/(506*ROOT.gPad.GetWw());
-  label="#sqrt{s}=13 TeV, #intL dt = " + lumi + " fb^{-1}"
+  label="#sqrt{s}=13 TeV, L = " + lumi + " fb^{-1}"
   l.DrawLatex(x,y-dely,label);
                      
 
